@@ -622,6 +622,140 @@
             gap: var(--spacing-sm);
         }
 
+        /* ========== ORG CHART ========== */
+        .org-chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xl);
+            padding: var(--spacing-lg);
+        }
+
+        .org-node {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--border-accent);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            min-width: 200px;
+            text-align: center;
+            transition: all var(--transition-base);
+            position: relative;
+        }
+
+        .org-node:hover {
+            background: rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .org-node.ceo {
+            border-color: var(--accent-secondary);
+            background: rgba(245, 179, 1, 0.05);
+            min-width: 250px;
+        }
+
+        .org-node.coo {
+            border-color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.05);
+            min-width: 230px;
+        }
+
+        .org-node.chief {
+            border-color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.08);
+            min-width: 200px;
+        }
+
+        .org-node.agent {
+            border-color: rgba(139, 92, 246, 0.3);
+            background: rgba(139, 92, 246, 0.05);
+            min-width: 160px;
+            padding: var(--spacing-sm);
+        }
+
+        .org-node-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .org-node-role {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .org-node-meta {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+        }
+
+        .org-node-status {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .org-level {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+            width: 100%;
+            position: relative;
+        }
+
+        .org-level-connector {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(180deg, var(--accent-primary), transparent);
+        }
+
+        .org-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .org-department {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: var(--spacing-md);
+            width: 100%;
+            max-width: 600px;
+            padding: var(--spacing-md);
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .org-department-title {
+            grid-column: 1 / -1;
+            font-weight: 700;
+            color: var(--accent-secondary);
+            font-size: 0.95rem;
+            text-align: center;
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .org-connector-vertical {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent-primary), transparent);
+            top: 0;
+            height: 40px;
+        }
+
         /* ========== RESPONSIVE ========== */
         @media (max-width: 1024px) {
             .header-title {
@@ -680,6 +814,7 @@
                 <button class="nav-tab" onclick="switchTab('agents')">🧠 Agents</button>
                 <button class="nav-tab" onclick="switchTab('tasks')">🧾 Tasks</button>
                 <button class="nav-tab" onclick="switchTab('standup')">🗓️ Standup</button>
+                <button class="nav-tab" onclick="switchTab('orgchart')">📊 Org Chart</button>
                 <button class="nav-tab" onclick="switchTab('workspaces')">🧩 Workspaces</button>
                 <button class="nav-tab" onclick="switchTab('docs')">📚 Docs</button>
                 <button class="nav-tab" onclick="switchTab('logs')">🌙 Logs</button>
@@ -700,6 +835,7 @@
     <!-- Left Rail -->
     <div class="left-rail">
         <div class="rail-icon" onclick="switchTab('overview')" title="Overview">📊</div>
+        <div class="rail-icon" onclick="switchTab('orgchart')" title="Org Chart">🏢</div>
         <div class="rail-icon" onclick="switchTab('agents')" title="Agents">🧠</div>
         <div class="rail-icon" onclick="switchTab('tasks')" title="Tasks">🧾</div>
         <div class="rail-icon" onclick="switchTab('standup')" title="Standup">📅</div>
@@ -815,6 +951,17 @@
                     </div>
                     <input type="text" class="form-input" id="activityInput" placeholder="Log an activity...">
                     <button class="btn" onclick="addActivity()" style="margin-top: var(--spacing-sm); width: 100%;">Log</button>
+                </div>
+            </div>
+
+            <!-- Org Chart Tab -->
+            <div class="tab-content" id="orgchart">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    Power AI Organization Chart
+                </div>
+                <div class="org-chart-container" id="orgChartContent">
+                    <!-- Generated by JS -->
                 </div>
             </div>
 
@@ -1151,12 +1298,184 @@
             event?.target?.classList.add('active');
 
             // Render content
+            if (tabName === 'orgchart') renderOrgChart();
             if (tabName === 'agents') renderAgents();
             if (tabName === 'overview') updateMetrics();
             if (tabName === 'crm') updateCRMMetrics();
             if (tabName === 'logs') renderLogs();
             if (tabName === 'workspaces') renderWorkspaces();
             if (tabName === 'docs') renderDocs();
+        }
+
+        // ========== ORG CHART ========== 
+        function renderOrgChart() {
+            const html = `
+                <!-- CEO Level -->
+                <div class="org-level">
+                    <div class="org-node ceo">
+                        <div class="org-node-title">👑 Louis / Marcelo</div>
+                        <div class="org-node-role">CEO & Founder</div>
+                        <div class="org-node-meta">Vision · Strategy · Leadership</div>
+                    </div>
+                </div>
+
+                <!-- COO Level -->
+                <div class="org-level" style="margin-top: var(--spacing-xl);">
+                    <div class="org-connector-vertical" style="left: 50%; height: 40px;"></div>
+                    <div class="org-node coo">
+                        <div class="org-node-title">🧠 Muddy</div>
+                        <div class="org-node-role">COO / Main Brain</div>
+                        <div class="org-node-meta">Research · Delegation · Execution</div>
+                    </div>
+                </div>
+
+                <!-- C-Suite + EA Level -->
+                <div class="org-level" style="margin-top: var(--spacing-xl); gap: var(--spacing-md);">
+                    <div class="org-branch">
+                        <div class="org-node chief">
+                            <div class="org-node-title">⚙️ Elon</div>
+                            <div class="org-node-role">CTO</div>
+                            <div class="org-node-meta">Technical Leader</div>
+                        </div>
+                        <div class="org-department">
+                            <div class="org-department-title">Backend & Security</div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Anvil</div>
+                                <div class="org-node-meta">Backend Engineer</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Cipher</div>
+                                <div class="org-node-meta">Security Eng</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-department-title">Frontend & DevOps</div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Pixel</div>
+                                <div class="org-node-meta">Frontend Dev</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Sentry</div>
+                                <div class="org-node-meta">DevOps Eng</div>
+                                <span class="status-pill status-idle">Idle</span>
+                            </div>
+                            <div class="org-department-title">QA</div>
+                            <div class="org-node agent" style="grid-column: 1 / -1;">
+                                <div class="org-node-title">Audit</div>
+                                <div class="org-node-meta">QA Engineer</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="org-branch">
+                        <div class="org-node chief">
+                            <div class="org-node-title">📢 Gary</div>
+                            <div class="org-node-role">CMO</div>
+                            <div class="org-node-meta">Content Leader</div>
+                        </div>
+                        <div class="org-department">
+                            <div class="org-department-title">Content</div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Rex</div>
+                                <div class="org-node-meta">YouTube Writer</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Sage</div>
+                                <div class="org-node-meta">Research</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Echo</div>
+                                <div class="org-node-meta">Newsletter</div>
+                                <span class="status-pill status-idle">Idle</span>
+                            </div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Hype</div>
+                                <div class="org-node-meta">Automation</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Mika</div>
+                                <div class="org-node-meta">SEO & Social</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-department-title">Creative</div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Creative T&G</div>
+                                <div class="org-node-meta">Graphics</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Video & Motion</div>
+                                <div class="org-node-meta">Motion</div>
+                                <span class="status-pill status-idle">Idle</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="org-branch">
+                        <div class="org-node chief">
+                            <div class="org-node-title">💰 Warren</div>
+                            <div class="org-node-role">CRO</div>
+                            <div class="org-node-meta">Revenue Leader</div>
+                        </div>
+                        <div class="org-department">
+                            <div class="org-department-title">Products</div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Scout</div>
+                                <div class="org-node-meta">Intelligence</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Herald</div>
+                                <div class="org-node-meta">Launches</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-department-title">Growth</div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Beacon</div>
+                                <div class="org-node-meta">SEO & Growth</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Pulse</div>
+                                <div class="org-node-meta">Analytics</div>
+                                <span class="status-pill status-warning">Scaffolded</span>
+                            </div>
+                            <div class="org-department-title">Community</div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Clay</div>
+                                <div class="org-node-meta">Community Mgr</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Link</div>
+                                <div class="org-node-meta">Discord Mgr</div>
+                                <span class="status-pill status-active">Active</span>
+                            </div>
+                            <div class="org-node agent">
+                                <div class="org-node-title">Vibe</div>
+                                <div class="org-node-meta">Engagement</div>
+                                <span class="status-pill status-idle">Idle</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EA Level -->
+                <div class="org-level" style="margin-top: var(--spacing-xl);">
+                    <div class="org-node chief">
+                        <div class="org-node-title">📌 Kara</div>
+                        <div class="org-node-role">Executive Assistant</div>
+                        <div class="org-node-meta">EA to COO Muddy</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('orgChartContent').innerHTML = html;
         }
 
         // ========== AGENTS ========== 
