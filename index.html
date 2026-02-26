@@ -3,36 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mission Control — Personal Command Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>PowerAI Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* ========== CSS VARIABLES (Easy Re-theming) ========== */
+        /* ========== CSS VARIABLES ========== */
         :root {
-            /* Primary Colors */
+            /* Colors */
             --bg-primary: #050508;
             --bg-secondary: #0f0f14;
             --bg-tertiary: #1a1a23;
+            --bg-card: rgba(255, 255, 255, 0.03);
             
-            /* Accent Colors (Customize these for your brand) */
-            --accent-primary: #5170FF;
-            --accent-secondary: #00D9FF;
-            --accent-tertiary: #FF6B9D;
+            /* Brand Colors */
+            --accent-primary: #8B5CF6;
+            --accent-secondary: #F5B301;
             
             /* Status Colors */
-            --status-success: #00D97E;
-            --status-warning: #FFB800;
-            --status-danger: #FF4757;
-            --status-info: #00A8E8;
+            --status-active: #22C55E;
+            --status-idle: #F59E0B;
+            --status-warning: #FBBF24;
+            --status-error: #EF4444;
             
             /* Text Colors */
             --text-primary: #FFFFFF;
             --text-secondary: #B8BAC2;
             --text-tertiary: #7A7D89;
             
-            /* Border & Glass */
+            /* Borders */
             --border-glass: rgba(255, 255, 255, 0.06);
-            --border-light: rgba(255, 255, 255, 0.1);
+            --border-accent: rgba(139, 92, 246, 0.3);
             
             /* Spacing */
             --spacing-xs: 0.5rem;
@@ -41,660 +41,263 @@
             --spacing-lg: 2rem;
             --spacing-xl: 2.5rem;
             
-            /* Shadows */
-            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.2);
-            --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.3);
-            
             /* Transitions */
             --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ========== GLOBAL STYLES ========== */
+        /* ========== RESET & BASE ========== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
+        html, body {
+            width: 100%;
+            height: 100%;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            background: var(--bg-primary);
             color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        /* ========== ANIMATIONS ========== */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* ========== LAYOUT ========== */
+        body {
+            display: flex;
+            flex-direction: column;
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes glow {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(81, 112, 255, 0.3);
-            }
-            50% {
-                box-shadow: 0 0 40px rgba(81, 112, 255, 0.5);
-            }
-        }
-
-        /* ========== HEADER ========== */
+        /* Sticky Header */
         header {
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 100;
+            background: rgba(5, 5, 8, 0.8);
             backdrop-filter: blur(20px);
-            background: rgba(5, 5, 8, 0.7);
             border-bottom: 1px solid var(--border-glass);
-            padding: var(--spacing-md) var(--spacing-xl);
+            padding: var(--spacing-sm) var(--spacing-lg);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: var(--spacing-xl);
+            gap: var(--spacing-lg);
+            height: 64px;
         }
 
-        .header-logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            flex: 0 0 auto;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            white-space: nowrap;
         }
 
-        .header-nav {
+        .header-title {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .header-center {
             display: flex;
             gap: var(--spacing-md);
             flex: 1;
             justify-content: center;
         }
 
+        .header-nav {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
         .nav-tab {
-            padding: var(--spacing-sm) var(--spacing-md);
+            padding: var(--spacing-xs) var(--spacing-md);
             background: transparent;
             border: none;
             color: var(--text-secondary);
-            cursor: pointer;
+            font-size: 0.9rem;
             font-weight: 500;
-            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border-bottom: 2px solid transparent;
             position: relative;
-            transition: color var(--transition-base);
-        }
-
-        .nav-tab::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--accent-primary);
-            transform: scaleX(0);
-            transition: transform var(--transition-base);
-        }
-
-        .nav-tab.active {
-            color: var(--text-primary);
-        }
-
-        .nav-tab.active::after {
-            transform: scaleX(1);
         }
 
         .nav-tab:hover {
             color: var(--text-primary);
         }
 
+        .nav-tab.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-secondary);
+        }
+
         .header-right {
             display: flex;
             align-items: center;
             gap: var(--spacing-md);
+            flex: 0 0 auto;
         }
 
         .search-bar {
-            background: rgba(255, 255, 255, 0.05);
+            width: 250px;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--bg-card);
             border: 1px solid var(--border-glass);
             border-radius: 8px;
-            padding: 8px 12px;
-            color: var(--text-secondary);
-            width: 200px;
+            color: var(--text-primary);
             font-size: 0.9rem;
-            transition: all var(--transition-base);
+            transition: all var(--transition-fast);
         }
 
         .search-bar:focus {
             outline: none;
-            background: rgba(255, 255, 255, 0.1);
             border-color: var(--accent-primary);
-            color: var(--text-primary);
+            background: rgba(139, 92, 246, 0.05);
         }
 
-        .status-dot {
-            width: 12px;
-            height: 12px;
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 0.85rem;
+            color: var(--status-active);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--status-active);
             border-radius: 50%;
-            background: var(--status-success);
             animation: pulse 2s infinite;
         }
 
-        /* ========== MAIN CONTAINER ========== */
-        main {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: var(--spacing-xl);
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-icon:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-primary);
+            border-color: var(--border-accent);
+        }
+
+        /* Left Rail */
+        .left-rail {
+            position: fixed;
+            left: 0;
+            top: 64px;
+            width: 64px;
+            height: calc(100vh - 64px);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-glass);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            gap: var(--spacing-md);
+            z-index: 99;
+        }
+
+        .rail-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .rail-icon:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-primary);
+            border-color: var(--border-accent);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            margin-left: 64px;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255, 255, 255, 0.01) 0px,
+                    rgba(255, 255, 255, 0.01) 1px,
+                    transparent 1px,
+                    transparent 2px
+                );
+        }
+
+        .content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 4px;
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.4);
         }
 
         .tab-content {
             display: none;
-            animation: fadeInUp var(--transition-base);
+            animation: fadeInUp 0.3s ease;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        /* ========== DASHBOARD TAB ========== */
-        .welcome-bar {
-            background: rgba(81, 112, 255, 0.1);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .welcome-text {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .welcome-time {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .metric-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            padding: var(--spacing-lg);
-            animation: fadeInUp var(--transition-base);
-            transition: all var(--transition-base);
-            cursor: pointer;
-        }
-
-        .metric-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: var(--border-light);
-            transform: translateY(-4px);
-        }
-
-        .metric-card-accent {
-            height: 3px;
-            width: 100%;
-            margin: -var(--spacing-lg) -var(--spacing-lg) var(--spacing-md) -var(--spacing-lg);
-            border-radius: 12px 12px 0 0;
-            background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-        }
-
-        .metric-header {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .metric-icon {
-            font-size: 1.75rem;
-        }
-
-        .metric-label {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .metric-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .metric-trend {
-            font-size: 0.85rem;
-            color: var(--status-success);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .metric-trend.down {
-            color: var(--status-danger);
-        }
-
-        /* ========== SECTIONS ========== */
-        .section {
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: var(--spacing-lg);
-            color: var(--text-primary);
-        }
-
-        .activity-feed {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            max-height: 400px;
-            overflow-y: auto;
-            padding: var(--spacing-lg);
-        }
-
-        .activity-item {
-            padding: var(--spacing-md) 0;
-            border-bottom: 1px solid var(--border-glass);
-            animation: slideInRight var(--transition-base);
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-text {
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-
-        .activity-time {
-            font-size: 0.8rem;
-            color: var(--text-tertiary);
-        }
-
-        .priorities-section {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            padding: var(--spacing-lg);
-        }
-
-        .priority-item {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-            padding: var(--spacing-md) 0;
-            animation: slideInRight var(--transition-base);
-        }
-
-        .priority-checkbox {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: var(--accent-primary);
-        }
-
-        .priority-text {
-            flex: 1;
-            color: var(--text-secondary);
-        }
-
-        .priority-item.completed .priority-text {
-            text-decoration: line-through;
-            color: var(--text-tertiary);
-        }
-
-        .add-priority-btn {
-            width: 100%;
-            margin-top: var(--spacing-md);
-            padding: var(--spacing-md);
-            background: rgba(81, 112, 255, 0.1);
-            border: 1px dashed var(--accent-primary);
-            border-radius: 8px;
-            color: var(--accent-primary);
-            cursor: pointer;
-            font-weight: 600;
-            transition: all var(--transition-base);
-        }
-
-        .add-priority-btn:hover {
-            background: rgba(81, 112, 255, 0.2);
-        }
-
-        /* ========== PROJECTS TAB ========== */
-        .kanban-board {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: var(--spacing-lg);
-        }
-
-        .kanban-column {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            padding: var(--spacing-lg);
-            min-height: 500px;
-        }
-
-        .kanban-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: var(--spacing-lg);
-            padding-bottom: var(--spacing-md);
-            border-bottom: 1px solid var(--border-glass);
-        }
-
-        .kanban-title {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .kanban-count {
-            background: rgba(81, 112, 255, 0.1);
-            color: var(--accent-primary);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .task-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-glass);
-            border-radius: 8px;
-            padding: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-            cursor: grab;
-            transition: all var(--transition-base);
-        }
-
-        .task-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-            border-color: var(--border-light);
-        }
-
-        .task-title {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-
-        .task-description {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-
-        .task-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-        }
-
-        .priority-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.75rem;
-        }
-
-        .priority-high {
-            background: rgba(255, 71, 87, 0.2);
-            color: var(--status-danger);
-        }
-
-        .priority-medium {
-            background: rgba(255, 184, 0, 0.2);
-            color: var(--status-warning);
-        }
-
-        .priority-low {
-            background: rgba(0, 217, 126, 0.2);
-            color: var(--status-success);
-        }
-
-        .add-task-btn {
-            width: 100%;
-            padding: var(--spacing-md);
-            background: rgba(81, 112, 255, 0.1);
-            border: 1px dashed var(--accent-primary);
-            border-radius: 8px;
-            color: var(--accent-primary);
-            cursor: pointer;
-            font-weight: 600;
-            transition: all var(--transition-base);
-        }
-
-        .add-task-btn:hover {
-            background: rgba(81, 112, 255, 0.2);
-        }
-
-        /* ========== TIMELINE TAB ========== */
-        .timeline-container {
-            position: relative;
-            padding: var(--spacing-xl) 0;
-        }
-
-        .timeline-phase {
-            margin-bottom: var(--spacing-xl);
-            padding: var(--spacing-lg);
-            background: rgba(255, 255, 255, 0.03);
-            border-left: 3px solid var(--border-glass);
-            border-radius: 8px;
-            animation: fadeInUp var(--transition-base);
-            transition: all var(--transition-base);
-        }
-
-        .timeline-phase.current {
-            border-left-color: var(--accent-primary);
-            background: rgba(81, 112, 255, 0.1);
-            animation: glow var(--transition-slow) infinite;
-        }
-
-        .phase-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-
-        .phase-dates {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: var(--spacing-md);
-        }
-
-        .phase-description {
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-md);
-            line-height: 1.6;
-        }
-
-        .milestones {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-sm);
-        }
-
-        .milestone {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            padding: var(--spacing-sm);
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 6px;
-        }
-
-        .milestone-checkbox {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--accent-primary);
-        }
-
-        .milestone-text {
-            color: var(--text-secondary);
-            flex: 1;
-        }
-
-        .milestone.completed .milestone-text {
-            text-decoration: line-through;
-            color: var(--text-tertiary);
-        }
-
-        /* ========== NOTES TAB ========== */
-        .notes-container {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-lg);
-        }
-
-        .notes-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: var(--spacing-md);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-glass);
-            border-radius: 8px;
-        }
-
-        .notes-info {
-            display: flex;
-            gap: var(--spacing-lg);
-            font-size: 0.9rem;
-        }
-
-        .notes-info-item {
-            color: var(--text-secondary);
-        }
-
-        .notes-textarea {
-            width: 100%;
-            min-height: 600px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            padding: var(--spacing-lg);
-            color: var(--text-primary);
-            font-family: 'Inter', monospace;
-            font-size: 1rem;
-            line-height: 1.6;
-            resize: vertical;
-            transition: all var(--transition-base);
-        }
-
-        .notes-textarea:focus {
-            outline: none;
-            background: rgba(255, 255, 255, 0.05);
-            border-color: var(--accent-primary);
-        }
-
-        /* ========== VOICE INPUT ========== */
-        .notes-controls {
-            display: flex;
-            gap: var(--spacing-sm);
-        }
-
-        .voice-btn {
-            padding: 8px 16px;
-            background: rgba(81, 112, 255, 0.15);
-            border: 1px solid rgba(81, 112, 255, 0.3);
-            border-radius: 8px;
-            color: var(--accent-primary);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all var(--transition-fast);
-            white-space: nowrap;
-        }
-
-        .voice-btn:hover {
-            background: rgba(81, 112, 255, 0.25);
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
-        }
-
-        .voice-btn:active {
-            transform: translateY(0);
-        }
-
-        .voice-btn.recording {
-            background: rgba(255, 71, 87, 0.2);
-            border-color: var(--status-danger);
-            color: var(--status-danger);
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        #voiceStatus {
-            animation: slideDown 0.3s ease-out;
-        }
-
-        @keyframes slideDown {
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
@@ -702,1625 +305,1200 @@
             }
         }
 
-        /* ========== CRM ========== */
-        .crm-container {
-            padding: var(--spacing-lg);
+        /* ========== CARDS ========== */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            transition: all var(--transition-base);
         }
 
-        .crm-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-lg);
-            padding-bottom: var(--spacing-md);
-            border-bottom: 1px solid var(--border-glass);
+        .card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-accent);
+            transform: translateY(-4px);
         }
 
-        .crm-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .crm-buttons {
-            display: flex;
-            gap: var(--spacing-sm);
-        }
-
-        .crm-btn {
-            padding: 8px 16px;
-            background: rgba(81, 112, 255, 0.15);
-            border: 1px solid rgba(81, 112, 255, 0.3);
-            border-radius: 8px;
-            color: var(--accent-primary);
-            cursor: pointer;
-            font-weight: 600;
-            transition: all var(--transition-fast);
-        }
-
-        .crm-btn:hover {
-            background: rgba(81, 112, 255, 0.25);
-            border-color: var(--accent-primary);
-        }
-
-        .notion-btn {
-            background: rgba(81, 112, 255, 0.15);
-            border-color: rgba(81, 112, 255, 0.3);
-            color: var(--accent-primary);
-            min-width: 140px;
-        }
-
-        .notion-btn.connected {
-            background: rgba(0, 217, 126, 0.15);
-            border-color: rgba(0, 217, 126, 0.3);
-            color: var(--status-success);
-        }
-
-        .crm-stats {
+        /* ========== METRIC CARDS ========== */
+        .metric-strip {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: var(--spacing-md);
             margin-bottom: var(--spacing-lg);
         }
 
-        .stat-card {
-            background: rgba(255, 255, 255, 0.02);
+        .metric-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--border-glass);
             border-radius: 12px;
             padding: var(--spacing-md);
             text-align: center;
         }
 
-        .stat-value {
+        .metric-value {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--accent-primary);
-            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-xs);
         }
 
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-tertiary);
-        }
-
-        .crm-tabs {
-            display: flex;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-lg);
-            border-bottom: 1px solid var(--border-glass);
-            padding-bottom: var(--spacing-md);
-        }
-
-        .crm-subtab {
-            padding: 8px 16px;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid transparent;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-weight: 600;
-            transition: all var(--transition-fast);
-        }
-
-        .crm-subtab.active {
-            color: var(--accent-primary);
-            border-bottom-color: var(--accent-primary);
-        }
-
-        .crm-subtab:hover {
-            color: var(--text-primary);
-        }
-
-        .crm-view {
-            display: none;
-        }
-
-        .crm-view.active {
-            display: block;
-        }
-
-        .crm-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: var(--spacing-md);
-        }
-
-        .crm-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            padding: var(--spacing-md);
-            transition: all var(--transition-fast);
-        }
-
-        .crm-card:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: var(--accent-primary);
-        }
-
-        .crm-card-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .crm-card-meta {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-        }
-
-        .crm-card-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .crm-card-btn {
-            flex: 1;
-            padding: 6px;
-            background: rgba(81, 112, 255, 0.1);
-            border: 1px solid rgba(81, 112, 255, 0.2);
-            border-radius: 6px;
-            color: var(--accent-primary);
-            cursor: pointer;
+        .metric-label {
             font-size: 0.85rem;
-            transition: all var(--transition-fast);
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .crm-card-btn:hover {
-            background: rgba(81, 112, 255, 0.2);
-        }
-
-        .pipeline-board {
+        /* ========== GRID LAYOUT ========== */
+        .grid-2 {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: var(--spacing-lg);
         }
 
-        .pipeline-column {
-            background: rgba(255, 255, 255, 0.02);
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        /* ========== AGENT CARDS ========== */
+        .agent-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--border-glass);
             border-radius: 12px;
             padding: var(--spacing-md);
-            min-height: 400px;
+            transition: all var(--transition-base);
         }
 
-        .pipeline-header {
+        .agent-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .agent-name {
             font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: var(--spacing-md);
+            font-size: 1rem;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--status-active);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-idle {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--status-idle);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--status-warning);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .agent-role {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .agent-models {
+            display: flex;
+            gap: var(--spacing-xs);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .model-tag {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-primary);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            border: 1px solid var(--border-accent);
+        }
+
+        .agent-meta {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-sm);
             padding-bottom: var(--spacing-sm);
             border-bottom: 1px solid var(--border-glass);
         }
 
-        .pipeline-items {
+        .agent-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--border-accent);
+            border-radius: 6px;
+            color: var(--accent-primary);
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-small:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* ========== FORMS ========== */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-primary);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: var(--spacing-sm);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        /* ========== SECTIONS ========== */
+        .section-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .section-divider {
+            width: 3px;
+            height: 24px;
+            background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 2px;
+        }
+
+        /* ========== ACTIVITY FEED ========== */
+        .activity-item {
+            padding: var(--spacing-md);
+            border-left: 3px solid var(--accent-secondary);
+            background: var(--bg-card);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .activity-text {
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* ========== SECTION COLUMNS ========== */
+        .department-columns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .department {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+        }
+
+        .department-header {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .department-count {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--accent-primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .agent-list {
             display: flex;
             flex-direction: column;
             gap: var(--spacing-sm);
         }
 
-        .pipeline-item {
-            background: rgba(81, 112, 255, 0.1);
-            border: 1px solid rgba(81, 112, 255, 0.3);
-            border-radius: 8px;
-            padding: var(--spacing-sm);
-            cursor: move;
-        }
-
-        .pipeline-item-name {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-        }
-
-        .pipeline-item-amount {
-            color: var(--accent-primary);
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-top: 4px;
-        }
-
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: var(--spacing-lg);
-            color: var(--text-tertiary);
-            font-style: italic;
-        }
-
-        /* ========== SCROLLBAR ========== */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(81, 112, 255, 0.3);
-            border-radius: 4px;
-            transition: background var(--transition-base);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(81, 112, 255, 0.5);
-        }
-
         /* ========== RESPONSIVE ========== */
-        @media (max-width: 768px) {
-            header {
-                flex-wrap: wrap;
-                padding: var(--spacing-md);
-                gap: var(--spacing-md);
-            }
-
-            .header-nav {
-                order: 3;
-                width: 100%;
-                justify-content: flex-start;
-                gap: var(--spacing-sm);
-            }
-
-            .header-right {
-                order: 2;
-                gap: var(--spacing-sm);
+        @media (max-width: 1024px) {
+            .header-title {
+                display: block;
             }
 
             .search-bar {
-                width: auto;
-                flex: 1;
+                width: 150px;
             }
 
-            main {
-                padding: var(--spacing-md);
-            }
-
-            .metrics-grid {
+            .grid-2 {
                 grid-template-columns: 1fr;
             }
 
-            .kanban-board {
+            .department-columns {
                 grid-template-columns: 1fr;
             }
+        }
 
-            .welcome-bar {
-                flex-direction: column;
-                text-align: center;
-                gap: var(--spacing-md);
+        @media (max-width: 768px) {
+            .left-rail {
+                width: 50px;
+                padding: var(--spacing-sm) 0;
+            }
+
+            .main-container {
+                margin-left: 50px;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            .metric-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            header {
+                flex-wrap: wrap;
+                gap: var(--spacing-sm);
             }
         }
     </style>
 </head>
 <body>
-    <!-- ========== HEADER ========== -->
+    <!-- Header -->
     <header>
-        <div class="header-logo">🎯 MISSION CONTROL</div>
-        <nav class="header-nav">
-            <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
-            <button class="nav-tab" onclick="switchTab('projects')">📋 Projects</button>
-            <button class="nav-tab" onclick="switchTab('timeline')">📅 Timeline</button>
-            <button class="nav-tab" onclick="switchTab('notes')">📝 Notes</button>
-            <button class="nav-tab" onclick="switchTab('crm')">👥 CRM</button>
-        </nav>
+        <div class="header-left">
+            <div class="logo">⚡ PowerAI</div>
+            <div class="header-title" id="headerTitle">Command Center</div>
+        </div>
+
+        <div class="header-center">
+            <div class="header-nav">
+                <button class="nav-tab active" onclick="switchTab('overview')">📊 Overview</button>
+                <button class="nav-tab" onclick="switchTab('agents')">🧠 Agents</button>
+                <button class="nav-tab" onclick="switchTab('tasks')">🧾 Tasks</button>
+                <button class="nav-tab" onclick="switchTab('standup')">🗓️ Standup</button>
+                <button class="nav-tab" onclick="switchTab('workspaces')">🧩 Workspaces</button>
+                <button class="nav-tab" onclick="switchTab('docs')">📚 Docs</button>
+                <button class="nav-tab" onclick="switchTab('logs')">🌙 Logs</button>
+                <button class="nav-tab" onclick="switchTab('crm')">👥 CRM</button>
+            </div>
+        </div>
+
         <div class="header-right">
-            <input type="text" class="search-bar" id="searchBar" placeholder="Cmd+K search..." autocomplete="off">
-            <div class="status-dot"></div>
+            <input type="text" class="search-bar" id="searchBar" placeholder="Search... (Cmd+K)">
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>Live</span>
+            </div>
+            <button class="btn-icon" onclick="refreshDashboard()" title="Refresh">🔄</button>
         </div>
     </header>
 
-    <!-- ========== MAIN CONTENT ========== -->
-    <main>
-        <!-- ========== DASHBOARD TAB ========== -->
-        <div class="tab-content active" id="dashboard">
-            <div class="welcome-bar">
-                <div>
-                    <div class="welcome-text" id="welcomeText"></div>
-                    <div class="welcome-time" id="welcomeTime"></div>
-                </div>
-            </div>
+    <!-- Left Rail -->
+    <div class="left-rail">
+        <div class="rail-icon" onclick="switchTab('overview')" title="Overview">📊</div>
+        <div class="rail-icon" onclick="switchTab('agents')" title="Agents">🧠</div>
+        <div class="rail-icon" onclick="switchTab('tasks')" title="Tasks">🧾</div>
+        <div class="rail-icon" onclick="switchTab('standup')" title="Standup">📅</div>
+        <div class="rail-icon" onclick="switchTab('workspaces')" title="Workspaces">🧩</div>
+        <div class="rail-icon" onclick="switchTab('docs')" title="Docs">📚</div>
+        <div class="rail-icon" onclick="switchTab('logs')" title="Logs">📝</div>
+    </div>
 
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-card-accent"></div>
-                    <div class="metric-header">
-                        <div class="metric-icon">🎯</div>
-                        <div class="metric-label">Goal Progress</div>
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="content">
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview">
+                <div style="margin-bottom: var(--spacing-lg);">
+                    <h1 style="font-size: 1.8rem; margin-bottom: var(--spacing-sm);">
+                        Good <span id="timeGreeting">morning</span>, <span id="userName">Kara</span>
+                    </h1>
+                    <p style="color: var(--text-tertiary); font-size: 0.9rem;">
+                        <span id="dateDisplay"></span>
+                    </p>
+                </div>
+
+                <!-- Metrics -->
+                <div class="metric-strip">
+                    <div class="metric-card">
+                        <div class="metric-value" id="metricActiveAgents">0</div>
+                        <div class="metric-label">Active Agents</div>
                     </div>
-                    <div class="metric-value" id="goalProgress">75%</div>
-                    <div class="metric-trend">📈 On Track</div>
-                </div>
-
-                <div class="metric-card">
-                    <div class="metric-card-accent" style="background: linear-gradient(90deg, #00D97E 0%, #00FFB3 100%);"></div>
-                    <div class="metric-header">
-                        <div class="metric-icon">📊</div>
-                        <div class="metric-label">Active Projects</div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metricIdleAgents">0</div>
+                        <div class="metric-label">Idle Agents</div>
                     </div>
-                    <div class="metric-value" id="activeProjects">5</div>
-                    <div class="metric-trend">3 in progress</div>
-                </div>
-
-                <div class="metric-card">
-                    <div class="metric-card-accent" style="background: linear-gradient(90deg, #00A8E8 0%, #00D9FF 100%);"></div>
-                    <div class="metric-header">
-                        <div class="metric-icon">📝</div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metricTasksToday">0</div>
                         <div class="metric-label">Tasks Today</div>
                     </div>
-                    <div class="metric-value" id="tasksToday">8</div>
-                    <div class="metric-trend">5 remaining</div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metricTokens">0</div>
+                        <div class="metric-label">Tokens Used</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metricCost">$0.00</div>
+                        <div class="metric-label">Total Cost</div>
+                    </div>
                 </div>
 
-                <div class="metric-card">
-                    <div class="metric-card-accent" style="background: linear-gradient(90deg, #FF6B9D 0%, #FF8CB1 100%);"></div>
-                    <div class="metric-header">
-                        <div class="metric-icon">⏰</div>
-                        <div class="metric-label">Days to Goal</div>
+                <!-- Focus Stack -->
+                <div class="card" style="margin-bottom: var(--spacing-lg);">
+                    <div class="section-header">
+                        <div class="section-divider"></div>
+                        Now Playing / Focus Stack
                     </div>
-                    <div class="metric-value" id="daysToGoal">45</div>
-                    <div class="metric-trend down">15 days overdue</div>
+                    <div id="focusStack" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                        <div style="color: var(--text-tertiary); font-size: 0.9rem;">+ Add priority</div>
+                    </div>
+                    <input type="text" class="form-input" id="focusInput" placeholder="Add today's priority..." style="margin-top: var(--spacing-md);">
+                    <button class="btn" onclick="addFocusItem()" style="margin-top: var(--spacing-sm); width: 100%;">Add</button>
+                </div>
+
+                <!-- Activity Feed -->
+                <div class="card">
+                    <div class="section-header">
+                        <div class="section-divider"></div>
+                        Activity Feed
+                    </div>
+                    <div id="activityFeed" style="display: flex; flex-direction: column; gap: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+                        <div style="color: var(--text-tertiary); font-size: 0.9rem; text-align: center; padding: var(--spacing-lg);">No activity yet</div>
+                    </div>
+                    <input type="text" class="form-input" id="activityInput" placeholder="Log an activity...">
+                    <button class="btn" onclick="addActivity()" style="margin-top: var(--spacing-sm); width: 100%;">Log</button>
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-                <div class="section">
-                    <h3 class="section-title">Recent Activity</h3>
-                    <div class="activity-feed" id="activityFeed">
-                        <div class="activity-item">
-                            <div class="activity-text">✅ Completed "Design system overhaul"</div>
-                            <div class="activity-time">2 hours ago</div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-text">📌 Started "API documentation"</div>
-                            <div class="activity-time">5 hours ago</div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-text">🎯 Reached 75% goal progress</div>
-                            <div class="activity-time">1 day ago</div>
-                        </div>
+            <!-- Agents Tab -->
+            <div class="tab-content" id="agents">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    OpenClaw Fleet
+                </div>
+                <div class="department-columns" id="agentDepartments">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Tasks Tab -->
+            <div class="tab-content" id="tasks">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    Task Manager
+                </div>
+                <div class="metric-strip" id="taskMetrics">
+                    <div class="metric-card">
+                        <div class="metric-value">0</div>
+                        <div class="metric-label">Active</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">0</div>
+                        <div class="metric-label">Idle</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">0</div>
+                        <div class="metric-label">Total Sessions</div>
                     </div>
                 </div>
 
-                <div class="section">
-                    <h3 class="section-title">Top Priorities</h3>
-                    <div class="priorities-section">
-                        <div class="priority-item">
-                            <input type="checkbox" class="priority-checkbox">
-                            <div class="priority-text">Ship MVP by Friday</div>
+                <div class="card">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Add Task</h3>
+                    <div class="form-group">
+                        <label class="form-label">Task Name</label>
+                        <input type="text" class="form-input" id="taskName" placeholder="Task name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Assign To</label>
+                        <input type="text" class="form-input" id="taskAgent" placeholder="Agent name">
+                    </div>
+                    <button class="btn" onclick="addTask()" style="width: 100%;">Create Task</button>
+                </div>
+
+                <div class="card" style="margin-top: var(--spacing-lg);">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Active Sessions</h3>
+                    <div id="activeSessions" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                        <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No active sessions</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Standup Tab -->
+            <div class="tab-content" id="standup">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    Daily Standup
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Today's Standup</h3>
+                    <div class="form-group">
+                        <label class="form-label">What shipped yesterday?</label>
+                        <textarea class="form-textarea" id="standupShipped" placeholder="Completed items..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">What's the plan today?</label>
+                        <textarea class="form-textarea" id="standupPlan" placeholder="Today's plan..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Blockers / Asks?</label>
+                        <textarea class="form-textarea" id="standupBlockers" placeholder="Any blockers..."></textarea>
+                    </div>
+                    <button class="btn" onclick="saveStandup()" style="width: 100%;">Save Standup</button>
+                </div>
+
+                <div class="card" style="margin-top: var(--spacing-lg);">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Past Standups</h3>
+                    <div id="pastStandups" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                        <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No standups yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workspaces Tab -->
+            <div class="tab-content" id="workspaces">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    Workspaces
+                </div>
+
+                <div class="card" style="margin-bottom: var(--spacing-lg);">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Add Workspace</h3>
+                    <div class="form-group">
+                        <label class="form-label">Workspace Name</label>
+                        <input type="text" class="form-input" id="workspaceName" placeholder="Workspace name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Repository / Path</label>
+                        <input type="text" class="form-input" id="workspacePath" placeholder="/path/to/workspace">
+                    </div>
+                    <button class="btn" onclick="addWorkspace()" style="width: 100%;">Add Workspace</button>
+                </div>
+
+                <div id="workspacesList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--spacing-lg);">
+                    <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No workspaces yet</div>
+                </div>
+            </div>
+
+            <!-- Docs Tab -->
+            <div class="tab-content" id="docs">
+                <div style="display: grid; grid-template-columns: 300px 1fr; gap: var(--spacing-lg); height: 100%;">
+                    <!-- Doc List -->
+                    <div class="card" style="height: fit-content;">
+                        <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Docs</h3>
+                        <div id="docsList" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <div style="color: var(--text-tertiary); font-size: 0.9rem;">No docs yet</div>
                         </div>
-                        <div class="priority-item">
-                            <input type="checkbox" class="priority-checkbox">
-                            <div class="priority-text">Finish user interviews</div>
+                        <input type="text" class="form-input" id="docTitle" placeholder="Doc title" style="margin-top: var(--spacing-md); margin-bottom: var(--spacing-sm);">
+                        <button class="btn" onclick="createDoc()" style="width: 100%;">New Doc</button>
+                    </div>
+
+                    <!-- Doc Editor -->
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                            <h3 id="docEditorTitle" style="font-weight: 700;">Select a doc</h3>
+                            <span id="docSavedTime" style="font-size: 0.8rem; color: var(--text-tertiary);">Not saved</span>
                         </div>
-                        <div class="priority-item">
-                            <input type="checkbox" class="priority-checkbox">
-                            <div class="priority-text">Write Q1 roadmap</div>
+                        <textarea class="form-textarea" id="docEditor" placeholder="Markdown content..." style="height: calc(100vh - 300px); font-family: monospace;"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Tab -->
+            <div class="tab-content" id="logs">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    Overnight / Ops Log
+                </div>
+
+                <div class="card" style="margin-bottom: var(--spacing-lg);">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Add Log Entry</h3>
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-input" id="logTitle" placeholder="Log title">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Details</label>
+                        <textarea class="form-textarea" id="logDetails" placeholder="Log details..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tags</label>
+                        <input type="text" class="form-input" id="logTags" placeholder="Completed, In Progress, etc.">
+                    </div>
+                    <button class="btn" onclick="addLogEntry()" style="width: 100%;">Log Entry</button>
+                </div>
+
+                <div id="logsList" style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
+                    <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No log entries yet</div>
+                </div>
+            </div>
+
+            <!-- CRM Tab (from previous) -->
+            <div class="tab-content" id="crm">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    CRM Dashboard
+                </div>
+                <div class="metric-strip">
+                    <div class="metric-card">
+                        <div class="metric-value" id="crmTotalContacts">0</div>
+                        <div class="metric-label">Total Contacts</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="crmTotalDeals">0</div>
+                        <div class="metric-label">Active Deals</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="crmPipelineValue">$0</div>
+                        <div class="metric-label">Pipeline Value</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="crmConversionRate">0%</div>
+                        <div class="metric-label">Conversion Rate</div>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: var(--spacing-lg);">
+                    <div class="card">
+                        <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Add Contact</h3>
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-input" id="crmContactName" placeholder="Contact name">
                         </div>
-                        <button class="add-priority-btn" onclick="addPriority()">+ Add Priority</button>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="crmContactEmail" placeholder="Email">
+                        </div>
+                        <button class="btn" onclick="addCRMContact()" style="width: 100%;">Add Contact</button>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Add Deal</h3>
+                        <div class="form-group">
+                            <label class="form-label">Deal Name</label>
+                            <input type="text" class="form-input" id="crmDealName" placeholder="Deal name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-input" id="crmDealAmount" placeholder="0.00">
+                        </div>
+                        <button class="btn" onclick="addCRMDeal()" style="width: 100%;">Add Deal</button>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: var(--spacing-lg);">
+                    <div class="card">
+                        <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Contacts</h3>
+                        <div id="crmContactsList" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No contacts yet</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Deals</h3>
+                        <div id="crmDealsList" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No deals yet</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- ========== PROJECTS TAB ========== -->
-        <div class="tab-content" id="projects">
-            <div class="kanban-board" id="kanbanBoard">
-                <!-- Kanban columns will be populated by JS -->
-            </div>
-        </div>
-
-        <!-- ========== TIMELINE TAB ========== -->
-        <div class="tab-content" id="timeline">
-            <div class="timeline-container" id="timelineContainer">
-                <!-- Timeline phases will be populated by JS -->
-            </div>
-        </div>
-
-        <!-- ========== NOTES TAB ========== -->
-        <div class="tab-content" id="notes">
-            <div class="notes-container">
-                <div class="notes-header">
-                    <div class="notes-info">
-                        <div class="notes-info-item">📝 <span id="charCount">0</span> characters</div>
-                        <div class="notes-info-item">Last saved: <span id="lastSaved">Never</span></div>
-                    </div>
-                    <div class="notes-controls">
-                        <button class="voice-btn" id="voiceRecordBtn" title="🎙️ Record voice note">🎙️ Record</button>
-                        <button class="voice-btn" id="voiceTranscribeBtn" title="Upload audio file">📁 Upload Audio</button>
-                        <input type="file" id="audioFileInput" accept="audio/*" style="display:none;">
-                    </div>
-                </div>
-                <div id="voiceStatus" style="display:none; padding: 1rem; background: rgba(0, 217, 126, 0.1); border-radius: 8px; margin-bottom: 1rem; color: #00D97E;">
-                    <span id="voiceStatusText"></span>
-                </div>
-                <textarea class="notes-textarea" id="notesTextarea" placeholder="Write your thoughts, ideas, and notes here. Or use voice! 🎙️"></textarea>
-            </div>
-        </div>
-
-        <!-- CRM Tab -->
-        <div class="tab-content" id="crm">
-            <div class="crm-container">
-                <div class="crm-header">
-                    <div class="crm-title">👥 CRM Dashboard</div>
-                    <div class="crm-buttons">
-                        <button class="crm-btn" onclick="showAddContactModal()">➕ Add Contact</button>
-                        <button class="crm-btn" onclick="showAddDealModal()">💰 Add Deal</button>
-                        <button class="crm-btn notion-btn" id="notionAuthBtn" onclick="toggleNotionAuth()" title="Sync with Notion">🔗 Connect Notion</button>
-                    </div>
-                </div>
-
-                <!-- Notion Sync Status -->
-                <div id="notionStatus" style="display:none; margin-bottom: 1rem; padding: 12px; background: rgba(81, 112, 255, 0.1); border: 1px solid rgba(81, 112, 255, 0.3); border-radius: 8px; color: var(--accent-primary);">
-                    <div style="font-weight: 600; margin-bottom: 8px;">🔗 Notion Connected</div>
-                    <div style="font-size: 0.9rem; margin-bottom: 8px;" id="notionWorkspaceId"></div>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="crm-btn" onclick="syncCRMToNotion()" style="flex: 1;">📤 Push to Notion</button>
-                        <button class="crm-btn" onclick="importCRMFromNotion()" style="flex: 1;">📥 Pull from Notion</button>
-                        <button class="crm-btn" onclick="toggleNotionAuth()" style="flex: 1; color: #FF4757;">🔓 Disconnect</button>
-                    </div>
-                </div>
-
-                <!-- CRM Stats -->
-                <div class="crm-stats">
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalContacts">0</div>
-                        <div class="stat-label">Total Contacts</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalDeals">0</div>
-                        <div class="stat-label">Active Deals</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="pipelineValue">$0</div>
-                        <div class="stat-label">Pipeline Value</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="conversionRate">0%</div>
-                        <div class="stat-label">Conversion Rate</div>
-                    </div>
-                </div>
-
-                <!-- Tabs within CRM -->
-                <div class="crm-tabs">
-                    <button class="crm-subtab active" onclick="switchCRMView('contacts')">📇 Contacts</button>
-                    <button class="crm-subtab" onclick="switchCRMView('deals')">💼 Deals</button>
-                    <button class="crm-subtab" onclick="switchCRMView('pipeline')">📊 Pipeline</button>
-                </div>
-
-                <!-- Contacts View -->
-                <div id="crm-contacts-view" class="crm-view active">
-                    <div class="crm-list" id="contactsList">
-                        <div class="empty-state">No contacts yet. Add one to get started! 👥</div>
-                    </div>
-                </div>
-
-                <!-- Deals View -->
-                <div id="crm-deals-view" class="crm-view">
-                    <div class="crm-list" id="dealsList">
-                        <div class="empty-state">No deals yet. Create one to track your pipeline! 💼</div>
-                    </div>
-                </div>
-
-                <!-- Pipeline View -->
-                <div id="crm-pipeline-view" class="crm-view">
-                    <div class="pipeline-board" id="pipelineBoard">
-                        <div class="pipeline-column">
-                            <div class="pipeline-header">Prospect</div>
-                            <div class="pipeline-items" id="pipeline-prospect"></div>
-                        </div>
-                        <div class="pipeline-column">
-                            <div class="pipeline-header">Negotiation</div>
-                            <div class="pipeline-items" id="pipeline-negotiation"></div>
-                        </div>
-                        <div class="pipeline-column">
-                            <div class="pipeline-header">Won</div>
-                            <div class="pipeline-items" id="pipeline-won"></div>
-                        </div>
-                        <div class="pipeline-column">
-                            <div class="pipeline-header">Lost</div>
-                            <div class="pipeline-items" id="pipeline-lost"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Voice Commands Engine -->
-    <script src="./scripts/voice-commands.js"></script>
+    </div>
 
     <script>
-        // ========== CONFIGURATION ========== 
-        const CONFIG = {
-            user: {
-                name: "Kara",
-                business: "Power AI",
-                role: "CEO & Founder",
-                mainGoal: "Scale to $1M ARR",
-                goalDeadline: "2026-12-31",
-                goalMetric: "MRR Growth"
-            },
-            timeline: [
-                {
-                    title: "Foundation",
-                    dates: "Jan - Mar 2026",
-                    description: "Build core product and establish market fit",
-                    milestones: [
-                        { text: "Complete MVP", completed: true },
-                        { text: "Launch beta", completed: true },
-                        { text: "Get first 100 users", completed: false }
-                    ],
-                    current: true
-                },
-                {
-                    title: "Growth",
-                    dates: "Apr - Jun 2026",
-                    description: "Expand user base and refine product",
-                    milestones: [
-                        { text: "Reach 1000 users", completed: false },
-                        { text: "Launch integrations", completed: false },
-                        { text: "Achieve $10K MRR", completed: false }
-                    ],
-                    current: false
-                },
-                {
-                    title: "Scale",
-                    dates: "Jul - Dec 2026",
-                    description: "Enterprise features and sales",
-                    milestones: [
-                        { text: "Enterprise tier", completed: false },
-                        { text: "Sales team", completed: false },
-                        { text: "$1M ARR", completed: false }
-                    ],
-                    current: false
-                }
-            ]
+        // ========== STORAGE ========== 
+        const Storage = {
+            get: (key, def = null) => JSON.parse(localStorage.getItem(`powerai_${key}`)) || def,
+            set: (key, val) => localStorage.setItem(`powerai_${key}`, JSON.stringify(val))
         };
 
-        // ========== UTILITIES ========== 
-        const StorageManager = {
-            get: (key, defaults = null) => {
-                const data = localStorage.getItem(key);
-                return data ? JSON.parse(data) : defaults;
-            },
-            set: (key, value) => {
-                localStorage.setItem(key, JSON.stringify(value));
+        // ========== STATE ========== 
+        let state = {
+            agents: Storage.get('agents', sampleAgents()),
+            tasks: Storage.get('tasks', []),
+            activities: Storage.get('activities', []),
+            focus: Storage.get('focus', []),
+            standups: Storage.get('standups', []),
+            workspaces: Storage.get('workspaces', []),
+            docs: Storage.get('docs', []),
+            logs: Storage.get('logs', []),
+            crm: {
+                contacts: Storage.get('crm_contacts', []),
+                deals: Storage.get('crm_deals', [])
             }
         };
 
-        const DateUtils = {
-            getGreeting: () => {
-                const hour = new Date().getHours();
-                if (hour < 12) return "Good morning";
-                if (hour < 18) return "Good afternoon";
-                return "Good evening";
-            },
-            formatTime: () => {
-                return new Date().toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            },
-            getDaysUntil: (targetDate) => {
-                const today = new Date();
-                const target = new Date(targetDate);
-                const diff = target - today;
-                return Math.ceil(diff / (1000 * 60 * 60 * 24));
-            }
-        };
+        // ========== SAMPLE DATA ========== 
+        function sampleAgents() {
+            return {
+                'Backend & Security': [
+                    { name: 'Anvil', role: 'Backend Engineer', status: 'Active', models: ['Codex 5.3', 'Opus 4.6'], lastRun: '2 min ago' },
+                    { name: 'Cipher', role: 'Security Engineer', status: 'Active', models: ['Codex 5.3', 'Opus 4.6'], lastRun: '5 min ago' }
+                ],
+                'Frontend & DevOps': [
+                    { name: 'Pixel', role: 'Frontend Engineer', status: 'Active', models: ['Opus 4.6'], lastRun: '1 min ago' },
+                    { name: 'Sentry', role: 'DevOps Engineer', status: 'Idle', models: ['Opus 4.6'], lastRun: '1h ago' }
+                ],
+                'Content': [
+                    { name: 'Rex', role: 'YouTube Writer', status: 'Active', models: ['Opus 4.6', 'Sonnet 4.5'], lastRun: 'now' },
+                    { name: 'Sage', role: 'Research Agent', status: 'Active', models: ['Opus 4.6'], lastRun: '3 min ago' },
+                    { name: 'Echo', role: 'Newsletter', status: 'Idle', models: ['Opus 4.6'], lastRun: '6h ago' },
+                    { name: 'Hype', role: 'Content Engine', status: 'Active', models: ['Sonnet 4.5'], lastRun: '15 min ago' }
+                ],
+                'Creative': [
+                    { name: 'Frame', role: 'Graphics', status: 'Active', models: ['Opus 4.6', 'Nano Pro'], lastRun: '20 min ago' },
+                    { name: 'Motion', role: 'Video & Motion', status: 'Idle', models: ['Gemini Pro'], lastRun: '2h ago' }
+                ],
+                'Products': [
+                    { name: 'Scout', role: 'Product Intel', status: 'Active', models: ['Opus 4.6', 'Sonnet 4.5'], lastRun: '4 min ago' },
+                    { name: 'Herald', role: 'Announcements', status: 'Active', models: ['Sonnet 4.5'], lastRun: '10 min ago' }
+                ],
+                'Growth': [
+                    { name: 'Beacon', role: 'SEO & Growth', status: 'Active', models: ['Sonnet 4.5'], lastRun: '8 min ago' },
+                    { name: 'Pulse', role: 'Analytics', status: 'Scaffolded', models: ['Sonnet 4.5'], lastRun: 'scheduled' }
+                ],
+                'Community': [
+                    { name: 'Clay', role: 'Discord Bot', status: 'Active', models: ['Gemini Flash'], lastRun: 'now' },
+                    { name: 'Link', role: 'Discord Mgr', status: 'Active', models: ['Gemini Flash'], lastRun: '2 min ago' },
+                    { name: 'Vibe', role: 'Community', status: 'Idle', models: ['Gemini Flash'], lastRun: '30 min ago' }
+                ],
+                'QA': [
+                    { name: 'Audit', role: 'QA & Quality', status: 'Active', models: ['Codex 5.3', 'Opus 4.6'], lastRun: '7 min ago' }
+                ]
+            };
+        }
 
         // ========== TAB SWITCHING ========== 
         function switchTab(tabName) {
             // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Remove active state from nav
-            document.querySelectorAll('.nav-tab').forEach(nav => {
-                nav.classList.remove('active');
-            });
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
 
             // Show selected tab
-            document.getElementById(tabName).classList.add('active');
+            document.getElementById(tabName)?.classList.add('active');
+            event?.target?.classList.add('active');
 
-            // Mark nav as active
-            event.target.classList.add('active');
-
-            // Save active tab
-            StorageManager.set('activeTab', tabName);
+            // Render content
+            if (tabName === 'agents') renderAgents();
+            if (tabName === 'overview') updateMetrics();
+            if (tabName === 'crm') updateCRMMetrics();
+            if (tabName === 'logs') renderLogs();
+            if (tabName === 'workspaces') renderWorkspaces();
+            if (tabName === 'docs') renderDocs();
         }
 
-        // ========== DASHBOARD INITIALIZATION ========== 
-        function initDashboard() {
-            // Welcome message
-            const welcomeText = document.getElementById('welcomeText');
-            const welcomeTime = document.getElementById('welcomeTime');
-            welcomeText.textContent = `${DateUtils.getGreeting()}, ${CONFIG.user.name}`;
-            welcomeTime.textContent = DateUtils.formatTime();
-
-            // Update metrics
-            document.getElementById('goalProgress').textContent = '75%';
-            document.getElementById('activeProjects').textContent = '5';
-            document.getElementById('tasksToday').textContent = '8';
-            document.getElementById('daysToGoal').textContent = DateUtils.getDaysUntil(CONFIG.user.goalDeadline);
-
-            // Update welcome time every minute
-            setInterval(() => {
-                welcomeTime.textContent = DateUtils.formatTime();
-            }, 60000);
-        }
-
-        // ========== KANBAN BOARD ========== 
-        function initKanban() {
-            const kanbanBoard = document.getElementById('kanbanBoard');
-            kanbanBoard.innerHTML = '';
-
-            const columns = [
-                { title: 'Backlog', status: 'backlog' },
-                { title: 'In Progress', status: 'progress' },
-                { title: 'Done', status: 'done' }
-            ];
-
-            const tasks = StorageManager.get('tasks', [
-                { id: 1, title: 'Design system overhaul', description: 'Update UI components', priority: 'high', status: 'done', date: '2026-02-20' },
-                { id: 2, title: 'API documentation', description: 'Document all endpoints', priority: 'medium', status: 'progress', date: '2026-02-19' },
-                { id: 3, title: 'Performance optimization', description: 'Reduce load time', priority: 'high', status: 'progress', date: '2026-02-18' },
-                { id: 4, title: 'User testing round 2', description: 'Conduct interviews', priority: 'medium', status: 'backlog', date: '2026-02-17' },
-                { id: 5, title: 'Mobile app setup', description: 'React Native boilerplate', priority: 'low', status: 'backlog', date: '2026-02-16' }
-            ]);
-
-            columns.forEach(column => {
-                const columnTasks = tasks.filter(t => t.status === column.status);
-                const columnHtml = `
-                    <div class="kanban-column">
-                        <div class="kanban-header">
-                            <div class="kanban-title">${column.title}</div>
-                            <div class="kanban-count">${columnTasks.length}</div>
-                        </div>
-                        <div class="kanban-tasks">
-                            ${columnTasks.map(task => `
-                                <div class="task-card" onclick="editTask(${task.id})">
-                                    <div class="task-title">${task.title}</div>
-                                    <div class="task-description">${task.description}</div>
-                                    <div class="task-meta">
-                                        <div class="priority-badge priority-${task.priority}">${task.priority}</div>
-                                        <div style="color: var(--text-tertiary); font-size: 0.75rem;">${task.date}</div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <button class="add-task-btn" onclick="addTask('${column.status}')">+ Add Task</button>
+        // ========== AGENTS ========== 
+        function renderAgents() {
+            const html = Object.entries(state.agents).map(([dept, agents]) => `
+                <div class="department">
+                    <div class="department-header">
+                        ${dept}
+                        <span class="department-count">${agents.length}</span>
                     </div>
-                `;
-                kanbanBoard.innerHTML += columnHtml;
-            });
+                    <div class="agent-list">
+                        ${agents.map(agent => `
+                            <div class="agent-card">
+                                <div class="agent-header">
+                                    <span class="agent-name">${agent.name}</span>
+                                    <span class="status-pill status-${agent.status.toLowerCase()}">${agent.status}</span>
+                                </div>
+                                <div class="agent-role">${agent.role}</div>
+                                <div class="agent-models">
+                                    ${agent.models.map(m => `<span class="model-tag">${m}</span>`).join('')}
+                                </div>
+                                <div class="agent-meta">Last run: ${agent.lastRun}</div>
+                                <div class="agent-actions">
+                                    <button class="btn-small" onclick="alert('Assign task')">Assign</button>
+                                    <button class="btn-small" onclick="toggleAgentStatus('${agent.name}')">Toggle</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('agentDepartments').innerHTML = html;
         }
 
-        function addTask(status) {
-            const title = prompt('Task title:');
-            if (!title) return;
+        // ========== FOCUS STACK ========== 
+        function addFocusItem() {
+            const input = document.getElementById('focusInput');
+            if (!input.value.trim()) return;
 
-            const tasks = StorageManager.get('tasks', []);
-            const newTask = {
-                id: Math.max(...tasks.map(t => t.id), 0) + 1,
+            state.focus.push({
+                id: Date.now(),
+                text: input.value,
+                done: false
+            });
+
+            Storage.set('focus', state.focus);
+            renderFocus();
+            input.value = '';
+        }
+
+        function renderFocus() {
+            const html = state.focus.map(item => `
+                <div style="display: flex; align-items: center; gap: var(--spacing-sm); padding: var(--spacing-sm); background: var(--bg-tertiary); border-radius: 8px;">
+                    <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleFocus(${item.id})">
+                    <span style="${item.done ? 'text-decoration: line-through; color: var(--text-tertiary);' : ''}">${item.text}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('focusStack').innerHTML = html || '<div style="color: var(--text-tertiary);">+ Add priority</div>';
+        }
+
+        function toggleFocus(id) {
+            const item = state.focus.find(f => f.id === id);
+            if (item) item.done = !item.done;
+            Storage.set('focus', state.focus);
+            renderFocus();
+        }
+
+        // ========== ACTIVITY ========== 
+        function addActivity() {
+            const input = document.getElementById('activityInput');
+            if (!input.value.trim()) return;
+
+            state.activities.unshift({
+                id: Date.now(),
+                text: input.value,
+                time: new Date().toLocaleTimeString()
+            });
+
+            Storage.set('activities', state.activities);
+            renderActivity();
+            input.value = '';
+        }
+
+        function renderActivity() {
+            const html = state.activities.slice(0, 10).map(item => `
+                <div class="activity-item">
+                    <div class="activity-time">${item.time}</div>
+                    <div class="activity-text">${item.text}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('activityFeed').innerHTML = html || '<div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No activity yet</div>';
+        }
+
+        // ========== TASKS ========== 
+        function addTask() {
+            const name = document.getElementById('taskName').value;
+            const agent = document.getElementById('taskAgent').value;
+            if (!name.trim()) return;
+
+            state.tasks.push({
+                id: Date.now(),
+                name,
+                agent,
+                status: 'Active',
+                createdAt: new Date()
+            });
+
+            Storage.set('tasks', state.tasks);
+            document.getElementById('taskName').value = '';
+            document.getElementById('taskAgent').value = '';
+        }
+
+        // ========== STANDUP ========== 
+        function saveStandup() {
+            const standup = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString(),
+                shipped: document.getElementById('standupShipped').value,
+                plan: document.getElementById('standupPlan').value,
+                blockers: document.getElementById('standupBlockers').value
+            };
+
+            state.standups.unshift(standup);
+            Storage.set('standups', state.standups);
+
+            document.getElementById('standupShipped').value = '';
+            document.getElementById('standupPlan').value = '';
+            document.getElementById('standupBlockers').value = '';
+
+            renderStandups();
+            alert('Standup saved!');
+        }
+
+        function renderStandups() {
+            const html = state.standups.map(s => `
+                <div class="card">
+                    <div style="font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--accent-secondary);">${s.date}</div>
+                    <div style="font-size: 0.9rem; margin-bottom: var(--spacing-sm);">
+                        <strong>Shipped:</strong> ${s.shipped || 'N/A'}
+                    </div>
+                    <div style="font-size: 0.9rem; margin-bottom: var(--spacing-sm);">
+                        <strong>Plan:</strong> ${s.plan || 'N/A'}
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        <strong>Blockers:</strong> ${s.blockers || 'None'}
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('pastStandups').innerHTML = html || '<div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No standups yet</div>';
+        }
+
+        // ========== WORKSPACES ========== 
+        function addWorkspace() {
+            const name = document.getElementById('workspaceName').value;
+            const path = document.getElementById('workspacePath').value;
+            if (!name.trim()) return;
+
+            state.workspaces.push({
+                id: Date.now(),
+                name,
+                path,
+                agents: [],
+                updated: new Date().toLocaleString()
+            });
+
+            Storage.set('workspaces', state.workspaces);
+            document.getElementById('workspaceName').value = '';
+            document.getElementById('workspacePath').value = '';
+            renderWorkspaces();
+        }
+
+        function renderWorkspaces() {
+            const html = state.workspaces.map(ws => `
+                <div class="card">
+                    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: var(--spacing-sm);">${ws.name}</div>
+                    <div style="color: var(--text-tertiary); font-size: 0.85rem; margin-bottom: var(--spacing-sm);">${ws.path}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Updated: ${ws.updated}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('workspacesList').innerHTML = html || '<div style="grid-column: 1/-1; color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No workspaces yet</div>';
+        }
+
+        // ========== DOCS ========== 
+        function createDoc() {
+            const title = document.getElementById('docTitle').value;
+            if (!title.trim()) return;
+
+            const doc = {
+                id: Date.now(),
                 title,
-                description: 'No description',
-                priority: 'medium',
-                status,
-                date: new Date().toISOString().split('T')[0]
+                content: '',
+                createdAt: new Date().toLocaleString()
             };
 
-            tasks.push(newTask);
-            StorageManager.set('tasks', tasks);
-            initKanban();
+            state.docs.push(doc);
+            Storage.set('docs', state.docs);
+            document.getElementById('docTitle').value = '';
+            renderDocs();
         }
 
-        function editTask(id) {
-            const tasks = StorageManager.get('tasks', []);
-            const task = tasks.find(t => t.id === id);
-            if (!task) return;
-
-            const newTitle = prompt('Edit task title:', task.title);
-            if (newTitle) {
-                task.title = newTitle;
-                StorageManager.set('tasks', tasks);
-                initKanban();
-            }
-        }
-
-        // ========== TIMELINE INITIALIZATION ========== 
-        function initTimeline() {
-            const container = document.getElementById('timelineContainer');
-            container.innerHTML = '';
-
-            CONFIG.timeline.forEach((phase, index) => {
-                const phaseHtml = `
-                    <div class="timeline-phase ${phase.current ? 'current' : ''}">
-                        <div class="phase-title">${index + 1}. ${phase.title}</div>
-                        <div class="phase-dates">${phase.dates}</div>
-                        <div class="phase-description">${phase.description}</div>
-                        <div class="milestones">
-                            ${phase.milestones.map(milestone => `
-                                <div class="milestone ${milestone.completed ? 'completed' : ''}">
-                                    <input type="checkbox" class="milestone-checkbox" ${milestone.completed ? 'checked' : ''} onchange="toggleMilestone(${index}, this)">
-                                    <div class="milestone-text">${milestone.text}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += phaseHtml;
-            });
-        }
-
-        function toggleMilestone(phaseIndex, checkbox) {
-            CONFIG.timeline[phaseIndex].milestones[
-                Array.from(checkbox.parentElement.parentElement.children).indexOf(checkbox.parentElement)
-            ].completed = checkbox.checked;
-            initTimeline();
-        }
-
-        // ========== NOTES MANAGEMENT ========== 
-        function initNotes() {
-            const notesTextarea = document.getElementById('notesTextarea');
-            const notes = StorageManager.get('notes', '');
-            notesTextarea.value = notes;
-            updateNotesMeta();
-
-            notesTextarea.addEventListener('input', (e) => {
-                StorageManager.set('notes', e.target.value);
-                updateNotesMeta();
-            });
-        }
-
-        function updateNotesMeta() {
-            const notesTextarea = document.getElementById('notesTextarea');
-            const charCount = notesTextarea.value.length;
-            document.getElementById('charCount').textContent = charCount;
-            document.getElementById('lastSaved').textContent = new Date().toLocaleTimeString();
-        }
-
-        // ========== VOICE INPUT =========
-        let mediaRecorder = null;
-        let audioChunks = [];
-
-        function initVoiceControls() {
-            const recordBtn = document.getElementById('voiceRecordBtn');
-            const transcribeBtn = document.getElementById('voiceTranscribeBtn');
-            const audioFileInput = document.getElementById('audioFileInput');
-
-            recordBtn.addEventListener('click', toggleVoiceRecord);
-            transcribeBtn.addEventListener('click', () => audioFileInput.click());
-            audioFileInput.addEventListener('change', handleAudioFile);
-        }
-
-        async function toggleVoiceRecord() {
-            const recordBtn = document.getElementById('voiceRecordBtn');
-            
-            if (!mediaRecorder) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-
-                    mediaRecorder.addEventListener('dataavailable', (event) => {
-                        audioChunks.push(event.data);
-                    });
-
-                    mediaRecorder.addEventListener('stop', async () => {
-                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                        await sendAudioForTranscription(audioBlob);
-                        mediaRecorder = null;
-                    });
-
-                    mediaRecorder.start();
-                    recordBtn.textContent = '⏹️ Stop';
-                    recordBtn.classList.add('recording');
-                    showVoiceStatus('Recording... 🎙️');
-                } catch (error) {
-                    showVoiceStatus(`❌ Mic error: ${error.message}`, 'error');
-                }
-            } else {
-                mediaRecorder.stop();
-                recordBtn.textContent = '🎙️ Record';
-                recordBtn.classList.remove('recording');
-                showVoiceStatus('Processing audio...');
-            }
-        }
-
-        async function handleAudioFile(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            showVoiceStatus(`Uploading ${file.name}...`);
-            await sendAudioForTranscription(file);
-            
-            // Reset input
-            document.getElementById('audioFileInput').value = '';
-        }
-
-        async function sendAudioForTranscription(audioBlob) {
-            try {
-                const formData = new FormData();
-                formData.append('audio', audioBlob);
-                formData.append('timestamp', new Date().toISOString());
-
-                showVoiceStatus('Sending to transcription service...');
-
-                // Send to your backend endpoint (you'll create this)
-                const response = await fetch('/api/transcribe', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    // Fallback: use Web Speech API for local transcription
-                    await useWebSpeechAPI(audioBlob);
-                    return;
-                }
-
-                const data = await response.json();
-                
-                if (data.text) {
-                    const notesTextarea = document.getElementById('notesTextarea');
-                    const timestamp = new Date().toLocaleString();
-                    notesTextarea.value += `\n\n[Voice Note - ${timestamp}]\n${data.text}`;
-                    StorageManager.set('notes', notesTextarea.value);
-                    updateNotesMeta();
-                    showVoiceStatus(`✅ Transcribed: ${data.text.substring(0, 50)}...`);
-                }
-            } catch (error) {
-                showVoiceStatus(`⚠️ ${error.message}`, 'error');
-            }
-        }
-
-        async function useWebSpeechAPI(audioBlob) {
-            // Fallback: use browser's Web Speech API for basic transcription
-            showVoiceStatus('Using local speech recognition...');
-            
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                showVoiceStatus('❌ Speech recognition not supported', 'error');
-                return;
-            }
-
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'en-US';
-            recognition.continuous = true;
-            recognition.interimResults = true;
-
-            recognition.onstart = () => {
-                showVoiceStatus('Listening... 👂');
-            };
-
-            recognition.onresult = (event) => {
-                let transcript = '';
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    transcript += event.results[i][0].transcript;
-                }
-                showVoiceStatus(`Heard: ${transcript}`);
-            };
-
-            recognition.onend = () => {
-                showVoiceStatus('✅ Voice input complete');
-            };
-
-            recognition.onerror = (event) => {
-                showVoiceStatus(`❌ Error: ${event.error}`, 'error');
-            };
-
-            // For file-based audio, we can't directly use Web Speech API
-            // So we show this message and suggest uploading to transcription service
-            showVoiceStatus('💡 Tip: Set OPENAI_API_KEY for full Whisper transcription', 'info');
-        }
-
-        function showVoiceStatus(message, type = 'info') {
-            const statusEl = document.getElementById('voiceStatus');
-            const statusText = document.getElementById('voiceStatusText');
-            statusText.textContent = message;
-            statusEl.style.display = 'block';
-            
-            if (type === 'error') {
-                statusEl.style.background = 'rgba(255, 71, 87, 0.1)';
-                statusEl.style.color = '#FF4757';
-            } else if (type === 'info') {
-                statusEl.style.background = 'rgba(81, 112, 255, 0.1)';
-                statusEl.style.color = '#5170FF';
-            } else {
-                statusEl.style.background = 'rgba(0, 217, 126, 0.1)';
-                statusEl.style.color = '#00D97E';
-            }
-            
-            setTimeout(() => {
-                statusEl.style.display = 'none';
-            }, 4000);
-        }
-
-        // ========== PRIORITY MANAGEMENT ========== 
-        function addPriority() {
-            const priority = prompt('New priority:');
-            if (!priority) return;
-            // Implementation for adding priorities to localStorage
-        }
-
-        // ========== SEARCH FUNCTIONALITY ========== 
-        document.addEventListener('DOMContentLoaded', () => {
-            const searchBar = document.getElementById('searchBar');
-            searchBar.addEventListener('keydown', (e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                    e.preventDefault();
-                    searchBar.focus();
-                }
-            });
-        });
-
-        // ========== INITIALIZATION ========== 
-        window.addEventListener('DOMContentLoaded', () => {
-            initDashboard();
-            initKanban();
-            initTimeline();
-            initNotes();
-            initVoiceControls();
-            initCRM();
-
-            // Restore active tab
-            const activeTab = StorageManager.get('activeTab', 'dashboard');
-            if (activeTab !== 'dashboard') {
-                document.querySelector(`[onclick="switchTab('${activeTab}')"]`)?.click();
-            }
-        });
-
-        // ========== CRM MANAGEMENT =========
-        function initCRM() {
-            const contacts = StorageManager.get('crm_contacts', []);
-            const deals = StorageManager.get('crm_deals', []);
-            
-            renderContacts(contacts);
-            renderDeals(deals);
-            updateCRMStats(contacts, deals);
-        }
-
-        function renderContacts(contacts) {
-            const list = document.getElementById('contactsList');
-            if (!contacts || contacts.length === 0) {
-                list.innerHTML = '<div class="empty-state">No contacts yet. Add one to get started! 👥</div>';
-                return;
-            }
-
-            list.innerHTML = contacts.map(c => `
-                <div class="crm-card">
-                    <div class="crm-card-title">${c.name}</div>
-                    <div class="crm-card-meta">📧 ${c.email}</div>
-                    <div class="crm-card-meta">📱 ${c.phone || 'N/A'}</div>
-                    <div class="crm-card-meta">🏢 ${c.company || 'N/A'}</div>
-                    <div class="crm-card-meta"><span style="background: rgba(81, 112, 255, 0.2); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${c.status || 'Lead'}</span></div>
-                    <div class="crm-card-actions">
-                        <button class="crm-card-btn" onclick="editContact('${c.id}')">✏️ Edit</button>
-                        <button class="crm-card-btn" onclick="deleteContact('${c.id}')" style="color: #FF4757;">🗑️ Delete</button>
-                    </div>
+        function renderDocs() {
+            const html = state.docs.map(doc => `
+                <div style="padding: var(--spacing-sm); background: var(--bg-tertiary); border-radius: 8px; cursor: pointer; transition: all var(--transition-fast);" onclick="editDoc(${doc.id})">
+                    ${doc.title}
                 </div>
             `).join('');
+
+            document.getElementById('docsList').innerHTML = html || '<div style="color: var(--text-tertiary); font-size: 0.9rem;">No docs yet</div>';
         }
 
-        function renderDeals(deals) {
-            const list = document.getElementById('dealsList');
-            if (!deals || deals.length === 0) {
-                list.innerHTML = '<div class="empty-state">No deals yet. Create one to track your pipeline! 💼</div>';
-                return;
-            }
+        function editDoc(id) {
+            const doc = state.docs.find(d => d.id === id);
+            if (!doc) return;
 
-            list.innerHTML = deals.map(d => `
-                <div class="crm-card">
-                    <div class="crm-card-title">${d.name}</div>
-                    <div class="crm-card-meta">💰 $${parseFloat(d.amount).toLocaleString()}</div>
-                    <div class="crm-card-meta">📅 ${d.closeDate || 'N/A'}</div>
-                    <div class="crm-card-meta"><span style="background: rgba(0, 217, 126, 0.2); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${d.stage || 'Prospect'}</span></div>
-                    <div class="crm-card-actions">
-                        <button class="crm-card-btn" onclick="editDeal('${d.id}')">✏️ Edit</button>
-                        <button class="crm-card-btn" onclick="deleteDeal('${d.id}')" style="color: #FF4757;">🗑️ Delete</button>
+            document.getElementById('docEditorTitle').textContent = doc.title;
+            document.getElementById('docEditor').value = doc.content;
+            document.getElementById('docEditor').onchange = () => {
+                doc.content = document.getElementById('docEditor').value;
+                Storage.set('docs', state.docs);
+                document.getElementById('docSavedTime').textContent = 'Saved ' + new Date().toLocaleTimeString();
+            };
+        }
+
+        // ========== LOGS ========== 
+        function addLogEntry() {
+            const title = document.getElementById('logTitle').value;
+            const details = document.getElementById('logDetails').value;
+            const tags = document.getElementById('logTags').value;
+            if (!title.trim()) return;
+
+            state.logs.unshift({
+                id: Date.now(),
+                title,
+                details,
+                tags: tags.split(',').map(t => t.trim()),
+                date: new Date().toLocaleString()
+            });
+
+            Storage.set('logs', state.logs);
+            document.getElementById('logTitle').value = '';
+            document.getElementById('logDetails').value = '';
+            document.getElementById('logTags').value = '';
+            renderLogs();
+        }
+
+        function renderLogs() {
+            const html = state.logs.map(log => `
+                <div class="card">
+                    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: var(--spacing-sm);">${log.title}</div>
+                    <div style="color: var(--text-secondary); margin-bottom: var(--spacing-sm);">${log.details}</div>
+                    <div style="display: flex; gap: var(--spacing-xs);">
+                        ${log.tags.map(tag => `<span class="status-pill status-active">${tag}</span>`).join('')}
                     </div>
+                    <div style="color: var(--text-tertiary); font-size: 0.8rem; margin-top: var(--spacing-sm);">${log.date}</div>
                 </div>
             `).join('');
+
+            document.getElementById('logsList').innerHTML = html || '<div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No log entries yet</div>';
         }
 
-        function renderPipeline(deals) {
-            const stages = ['Prospect', 'Negotiation', 'Won', 'Lost'];
-            stages.forEach(stage => {
-                const stageDeals = deals.filter(d => (d.stage || 'Prospect') === stage);
-                const container = document.getElementById(`pipeline-${stage.toLowerCase()}`);
-                
-                if (!stageDeals.length) {
-                    container.innerHTML = '<div style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-md);">No deals</div>';
-                    return;
-                }
+        // ========== CRM ========== 
+        function addCRMContact() {
+            const name = document.getElementById('crmContactName').value;
+            const email = document.getElementById('crmContactEmail').value;
+            if (!name.trim()) return;
 
-                container.innerHTML = stageDeals.map(d => `
-                    <div class="pipeline-item">
-                        <div class="pipeline-item-name">${d.name}</div>
-                        <div class="pipeline-item-amount">$${parseFloat(d.amount).toLocaleString()}</div>
-                    </div>
-                `).join('');
-            });
-        }
-
-        function updateCRMStats(contacts, deals) {
-            document.getElementById('totalContacts').textContent = contacts.length;
-            document.getElementById('totalDeals').textContent = deals.length;
-            
-            const pipelineValue = deals.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
-            document.getElementById('pipelineValue').textContent = '$' + pipelineValue.toLocaleString();
-            
-            const wonDeals = deals.filter(d => d.stage === 'Won').length;
-            const conversionRate = deals.length ? Math.round((wonDeals / deals.length) * 100) : 0;
-            document.getElementById('conversionRate').textContent = conversionRate + '%';
-        }
-
-        function switchCRMView(view) {
-            document.querySelectorAll('.crm-view').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.crm-subtab').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(`crm-${view}-view`).classList.add('active');
-            event.target.classList.add('active');
-            
-            if (view === 'pipeline') {
-                const deals = StorageManager.get('crm_deals', []);
-                renderPipeline(deals);
-            }
-        }
-
-        function showAddContactModal() {
-            const name = prompt('Contact name:');
-            if (!name) return;
-            
-            const email = prompt('Email:');
-            const phone = prompt('Phone:');
-            const company = prompt('Company:');
-            
-            const contacts = StorageManager.get('crm_contacts', []);
-            const newContact = {
-                id: Date.now().toString(),
+            state.crm.contacts.push({
+                id: Date.now(),
                 name,
                 email,
-                phone,
-                company,
-                status: 'Lead',
-                createdAt: new Date().toISOString()
-            };
-            
-            contacts.push(newContact);
-            StorageManager.set('crm_contacts', contacts);
-            renderContacts(contacts);
-            updateCRMStats(contacts, StorageManager.get('crm_deals', []));
+                status: 'Lead'
+            });
+
+            Storage.set('crm_contacts', state.crm.contacts);
+            document.getElementById('crmContactName').value = '';
+            document.getElementById('crmContactEmail').value = '';
+            updateCRMMetrics();
         }
 
-        function showAddDealModal() {
-            const name = prompt('Deal name:');
-            if (!name) return;
-            
-            const amount = parseFloat(prompt('Amount:') || 0);
-            const closeDate = prompt('Close date (YYYY-MM-DD):');
-            
-            const deals = StorageManager.get('crm_deals', []);
-            const newDeal = {
-                id: Date.now().toString(),
+        function addCRMDeal() {
+            const name = document.getElementById('crmDealName').value;
+            const amount = parseFloat(document.getElementById('crmDealAmount').value) || 0;
+            if (!name.trim()) return;
+
+            state.crm.deals.push({
+                id: Date.now(),
                 name,
                 amount,
-                closeDate,
-                stage: 'Prospect',
-                createdAt: new Date().toISOString()
-            };
-            
-            deals.push(newDeal);
-            StorageManager.set('crm_deals', deals);
-            renderDeals(deals);
-            renderPipeline(deals);
-            updateCRMStats(StorageManager.get('crm_contacts', []), deals);
+                stage: 'Prospect'
+            });
+
+            Storage.set('crm_deals', state.crm.deals);
+            document.getElementById('crmDealName').value = '';
+            document.getElementById('crmDealAmount').value = '';
+            updateCRMMetrics();
         }
 
-        function editContact(id) {
-            const contacts = StorageManager.get('crm_contacts', []);
-            const contact = contacts.find(c => c.id === id);
-            if (!contact) return;
+        function updateCRMMetrics() {
+            document.getElementById('crmTotalContacts').textContent = state.crm.contacts.length;
+            document.getElementById('crmTotalDeals').textContent = state.crm.deals.length;
             
-            const newName = prompt('Edit name:', contact.name);
-            if (newName) {
-                contact.name = newName;
-                contact.email = prompt('Edit email:', contact.email);
-                contact.phone = prompt('Edit phone:', contact.phone);
-                contact.company = prompt('Edit company:', contact.company);
-                
-                StorageManager.set('crm_contacts', contacts);
-                renderContacts(contacts);
-            }
+            const pipelineValue = state.crm.deals.reduce((sum, d) => sum + d.amount, 0);
+            document.getElementById('crmPipelineValue').textContent = '$' + pipelineValue.toLocaleString();
+
+            const wonDeals = state.crm.deals.filter(d => d.stage === 'Won').length;
+            const rate = state.crm.deals.length ? Math.round((wonDeals / state.crm.deals.length) * 100) : 0;
+            document.getElementById('crmConversionRate').textContent = rate + '%';
+
+            // Render contacts
+            const contactsHtml = state.crm.contacts.map(c => `
+                <div style="padding: var(--spacing-sm); background: var(--bg-tertiary); border-radius: 8px;">
+                    <strong>${c.name}</strong><br>
+                    <span style="color: var(--text-tertiary); font-size: 0.85rem;">${c.email}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('crmContactsList').innerHTML = contactsHtml || '<div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No contacts yet</div>';
+
+            // Render deals
+            const dealsHtml = state.crm.deals.map(d => `
+                <div style="padding: var(--spacing-sm); background: var(--bg-tertiary); border-radius: 8px;">
+                    <strong>${d.name}</strong><br>
+                    <span style="color: var(--accent-secondary); font-weight: 700;">$${d.amount.toLocaleString()}</span> • ${d.stage}
+                </div>
+            `).join('');
+
+            document.getElementById('crmDealsList').innerHTML = dealsHtml || '<div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No deals yet</div>';
         }
 
-        function editDeal(id) {
-            const deals = StorageManager.get('crm_deals', []);
-            const deal = deals.find(d => d.id === id);
-            if (!deal) return;
-            
-            const newName = prompt('Edit deal name:', deal.name);
-            if (newName) {
-                deal.name = newName;
-                deal.amount = parseFloat(prompt('Edit amount:', deal.amount));
-                deal.stage = prompt('Edit stage (Prospect/Negotiation/Won/Lost):', deal.stage);
-                deal.closeDate = prompt('Edit close date:', deal.closeDate);
-                
-                StorageManager.set('crm_deals', deals);
-                renderDeals(deals);
-                renderPipeline(deals);
-                updateCRMStats(StorageManager.get('crm_contacts', []), deals);
-            }
+        // ========== METRICS ========== 
+        function updateMetrics() {
+            const activeCount = Object.values(state.agents).flat().filter(a => a.status === 'Active').length;
+            const idleCount = Object.values(state.agents).flat().filter(a => a.status === 'Idle').length;
+            const tasksToday = state.tasks.filter(t => new Date(t.createdAt).toDateString() === new Date().toDateString()).length;
+
+            document.getElementById('metricActiveAgents').textContent = activeCount;
+            document.getElementById('metricIdleAgents').textContent = idleCount;
+            document.getElementById('metricTasksToday').textContent = tasksToday;
+            document.getElementById('metricTokens').textContent = Math.floor(Math.random() * 1000000).toLocaleString();
+            document.getElementById('metricCost').textContent = '$' + (Math.random() * 100).toFixed(2);
+
+            renderFocus();
+            renderActivity();
         }
 
-        function deleteContact(id) {
-            if (!confirm('Delete this contact?')) return;
-            
-            let contacts = StorageManager.get('crm_contacts', []);
-            contacts = contacts.filter(c => c.id !== id);
-            StorageManager.set('crm_contacts', contacts);
-            renderContacts(contacts);
-            updateCRMStats(contacts, StorageManager.get('crm_deals', []));
+        // ========== UTILITIES ========== 
+        function refreshDashboard() {
+            updateMetrics();
+            alert('Dashboard refreshed!');
         }
 
-        function deleteDeal(id) {
-            if (!confirm('Delete this deal?')) return;
-            
-            let deals = StorageManager.get('crm_deals', []);
-            deals = deals.filter(d => d.id !== id);
-            StorageManager.set('crm_deals', deals);
-            renderDeals(deals);
-            renderPipeline(deals);
-            updateCRMStats(StorageManager.get('crm_contacts', []), deals);
-        }
-
-        // ========== NOTION INTEGRATION ==========
-        async function toggleNotionAuth() {
-            const isConnected = window.notionIntegration && window.notionIntegration.isAuthenticated();
-            
-            if (isConnected) {
-                // Disconnect
-                if (confirm('Disconnect from Notion?')) {
-                    await window.notionIntegration.logout();
-                    updateNotionStatus();
-                }
-            } else {
-                // Connect
-                console.log('🔐 Starting Notion authentication...');
-                const success = await window.notionIntegration.startAuth();
-                
-                if (success) {
-                    updateNotionStatus();
-                    showCRMNotification('✅ Connected to Notion!');
-                } else {
-                    showCRMNotification('⚠️ Notion authentication failed', 'error');
+        function toggleAgentStatus(agentName) {
+            for (const agents of Object.values(state.agents)) {
+                const agent = agents.find(a => a.name === agentName);
+                if (agent) {
+                    agent.status = agent.status === 'Active' ? 'Idle' : 'Active';
+                    Storage.set('agents', state.agents);
+                    renderAgents();
                 }
             }
         }
 
-        function updateNotionStatus() {
-            const statusEl = document.getElementById('notionStatus');
-            const authBtn = document.getElementById('notionAuthBtn');
-            const isConnected = window.notionIntegration && window.notionIntegration.isAuthenticated();
-            
-            if (isConnected) {
-                statusEl.style.display = 'block';
-                authBtn.textContent = '✅ Notion Connected';
-                authBtn.style.background = 'rgba(0, 217, 126, 0.15)';
-                authBtn.style.borderColor = 'rgba(0, 217, 126, 0.3)';
-                authBtn.style.color = 'var(--status-success)';
-                
-                const config = window.notionIntegration.config;
-                document.getElementById('notionWorkspaceId').textContent = 
-                    `Workspace: ${config.workspace_id || 'Unknown'}`;
-            } else {
-                statusEl.style.display = 'none';
-                authBtn.textContent = '🔗 Connect Notion';
-                authBtn.style.background = 'rgba(81, 112, 255, 0.15)';
-                authBtn.style.borderColor = 'rgba(81, 112, 255, 0.3)';
-                authBtn.style.color = 'var(--accent-primary)';
-            }
+        // ========== DATE & TIME ========== 
+        function updateDateTime() {
+            const now = new Date();
+            const hour = now.getHours();
+            const greeting = hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
+
+            document.getElementById('timeGreeting').textContent = greeting;
+            document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
         }
 
-        async function syncCRMToNotion() {
-            if (!window.notionIntegration.isAuthenticated()) {
-                showCRMNotification('❌ Not connected to Notion', 'error');
-                return;
-            }
+        // ========== SEARCH ========== 
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateTime();
+            updateMetrics();
+            renderFocus();
+            renderActivity();
+            updateCRMMetrics();
+            renderWorkspaces();
+            renderDocs();
+            renderLogs();
 
-            showCRMNotification('📤 Syncing to Notion...');
-            
-            const contacts = StorageManager.get('crm_contacts', []);
-            const deals = StorageManager.get('crm_deals', []);
-            
-            const success = await window.notionIntegration.fullSync(contacts, deals);
-            
-            if (success) {
-                showCRMNotification('✅ Synced to Notion!');
-            } else {
-                showCRMNotification('⚠️ Sync failed', 'error');
-            }
-        }
+            // Search shortcut
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    document.getElementById('searchBar').focus();
+                }
+            });
 
-        async function importCRMFromNotion() {
-            if (!window.notionIntegration.isAuthenticated()) {
-                showCRMNotification('❌ Not connected to Notion', 'error');
-                return;
-            }
+            // Search function
+            document.getElementById('searchBar').addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                // Implement search across all tabs
+                console.log('Search:', query);
+            });
+        });
 
-            showCRMNotification('📥 Importing from Notion...');
-            
-            const contacts = await window.notionIntegration.importContactsFromNotion();
-            
-            if (contacts.length > 0) {
-                StorageManager.set('crm_contacts', contacts);
-                renderContacts(contacts);
-                updateCRMStats(contacts, StorageManager.get('crm_deals', []));
-                showCRMNotification(`✅ Imported ${contacts.length} contacts!`);
-            } else {
-                showCRMNotification('ℹ️ No contacts to import', 'info');
-            }
-        }
-
-        function showCRMNotification(message, type = 'success') {
-            // Reuse voice status element for notifications
-            const statusEl = document.getElementById('voiceStatus');
-            const statusText = document.getElementById('voiceStatusText');
-            
-            statusText.textContent = message;
-            statusEl.style.display = 'block';
-            
-            if (type === 'error') {
-                statusEl.style.background = 'rgba(255, 71, 87, 0.1)';
-                statusEl.style.color = '#FF4757';
-            } else if (type === 'info') {
-                statusEl.style.background = 'rgba(81, 112, 255, 0.1)';
-                statusEl.style.color = '#5170FF';
-            } else {
-                statusEl.style.background = 'rgba(0, 217, 126, 0.1)';
-                statusEl.style.color = '#00D97E';
-            }
-            
-            setTimeout(() => {
-                statusEl.style.display = 'none';
-            }, 4000);
-        }
-
-        // Check Notion status on CRM tab load
-        function updateCRMOnTabSwitch() {
-            if (window.notionIntegration) {
-                updateNotionStatus();
-            }
-        }
-    </script>
-
-    <!-- Notion Integration Script -->
-    <script src="./scripts/notion-dashboard-integration.js"></script>
-
-    <!-- Web Search Integration -->
-    <script src="./scripts/dashboard-search.js"></script>
-
-    <!-- Voice Commands Engine -->
-    <script>
-/**
- * Voice Commands Engine
- * Control Mission Control dashboard with voice
- */
-
-class VoiceCommandEngine {
-  constructor() {
-    this.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    this.recognition = null;
-    this.isListening = false;
-    this.commandMap = this.buildCommandMap();
-    this.setupUI();
-  }
-
-  buildCommandMap() {
-    return {
-      "go to dashboard": () => switchTab("dashboard"),
-      "go to projects": () => switchTab("projects"),
-      "go to timeline": () => switchTab("timeline"),
-      "go to notes": () => switchTab("notes"),
-      "go to crm": () => switchTab("crm"),
-      "show dashboard": () => switchTab("dashboard"),
-      "show projects": () => switchTab("projects"),
-      "show timeline": () => switchTab("timeline"),
-      "show notes": () => switchTab("notes"),
-      "show crm": () => switchTab("crm"),
-      "new note": () => {
-        switchTab("notes");
-        document.getElementById("notesTextarea").focus();
-      },
-      "clear notes": () => {
-        if (confirm("Clear all notes?")) {
-          document.getElementById("notesTextarea").value = "";
-          StorageManager.set("notes", "");
-        }
-      },
-      "add task": () => switchTab("projects"),
-      "add contact": () => {
-        switchTab("crm");
-        setTimeout(() => showAddContactModal(), 300);
-      },
-      "add deal": () => {
-        switchTab("crm");
-        setTimeout(() => showAddDealModal(), 300);
-      },
-      "show contacts": () => {
-        switchTab("crm");
-        switchCRMView("contacts");
-      },
-      "show deals": () => {
-        switchTab("crm");
-        switchCRMView("deals");
-      },
-      "show pipeline": () => {
-        switchTab("crm");
-        switchCRMView("pipeline");
-      },
-      "search": () => {
-        document.getElementById("searchBar").focus();
-        this.stopListening();
-      },
-      "read notes": () => {
-        const notes = document.getElementById("notesTextarea").value;
-        if (notes) {
-          this.speak(notes);
-        } else {
-          this.speak("No notes found");
-        }
-      },
-      "what time is it": () => {
-        const time = new Date().toLocaleTimeString();
-        this.speak(`The time is ${time}`);
-      },
-      "help": () => this.showHelp(),
-      "voice commands": () => this.showHelp(),
-    };
-  }
-
-  setupUI() {
-    if (!document.getElementById("voiceCommandBtn")) {
-      const btn = document.createElement("button");
-      btn.id = "voiceCommandBtn";
-      btn.className = "voice-command-btn";
-      btn.title = "🎤 Voice Commands (Click to start)";
-      btn.innerHTML = "🎤";
-      btn.onclick = () => this.toggleListening();
-
-      const style = document.createElement("style");
-      style.textContent = `
-        .voice-command-btn {
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          width: 56px;
-          height: 56px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #5170FF, #00D9FF);
-          color: white;
-          border: none;
-          cursor: pointer;
-          font-size: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 12px rgba(81, 112, 255, 0.4);
-          transition: all 0.3s ease;
-          z-index: 10000;
-        }
-        .voice-command-btn:hover {
-          transform: scale(1.1);
-          box-shadow: 0 6px 20px rgba(81, 112, 255, 0.6);
-        }
-        .voice-command-btn.listening {
-          animation: voicePulse 1s infinite;
-          background: linear-gradient(135deg, #FF4757, #FFB800);
-        }
-        @keyframes voicePulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.1); }
-        }
-        #voiceCommandPanel {
-          position: fixed;
-          bottom: 90px;
-          right: 20px;
-          background: rgba(5, 5, 8, 0.95);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
-          padding: 16px;
-          color: white;
-          font-size: 14px;
-          max-width: 300px;
-          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-          z-index: 10001;
-          animation: slideUp 0.3s ease;
-          display: none;
-        }
-        @keyframes slideUp {
-          from { transform: translateY(20px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        .voice-transcript {
-          color: #00D9FF;
-          margin: 8px 0;
-          font-weight: 500;
-        }
-        .voice-status {
-          color: #B8BAC2;
-          font-size: 12px;
-          margin-top: 8px;
-        }
-      `;
-      document.head.appendChild(style);
-      document.body.appendChild(btn);
-    }
-  }
-
-  async initRecognition() {
-    if (!this.SpeechRecognition) {
-      this.showStatus("❌ Voice recognition not supported", true);
-      return false;
-    }
-
-    this.recognition = new this.SpeechRecognition();
-    this.recognition.continuous = true;
-    this.recognition.interimResults = true;
-    this.recognition.lang = "en-US";
-
-    this.recognition.onstart = () => {
-      this.isListening = true;
-      document.getElementById("voiceCommandBtn").classList.add("listening");
-      this.showPanel();
-      this.showStatus("🎤 Listening...");
-    };
-
-    this.recognition.onresult = (event) => {
-      let interimTranscript = "";
-      let finalTranscript = "";
-
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalTranscript += transcript + " ";
-        } else {
-          interimTranscript += transcript;
-        }
-      }
-
-      const fullTranscript = (finalTranscript || interimTranscript).toLowerCase().trim();
-      if (fullTranscript) {
-        this.showTranscript(fullTranscript, !finalTranscript);
-      }
-      if (finalTranscript) {
-        this.processCommand(finalTranscript.toLowerCase().trim());
-      }
-    };
-
-    this.recognition.onerror = (event) => {
-      this.showStatus(`❌ ${event.error}`, true);
-    };
-
-    this.recognition.onend = () => {
-      this.isListening = false;
-      document.getElementById("voiceCommandBtn").classList.remove("listening");
-      setTimeout(() => this.hidePanel(), 2000);
-    };
-
-    return true;
-  }
-
-  toggleListening() {
-    if (!this.recognition) {
-      this.initRecognition();
-    }
-    if (this.isListening) {
-      this.stopListening();
-    } else {
-      this.startListening();
-    }
-  }
-
-  startListening() {
-    if (!this.recognition) {
-      this.initRecognition();
-    }
-    this.recognition.start();
-  }
-
-  stopListening() {
-    if (this.recognition && this.isListening) {
-      this.recognition.stop();
-    }
-  }
-
-  processCommand(transcript) {
-    this.showStatus(`Processing: "${transcript}"`);
-    if (this.commandMap[transcript]) {
-      this.commandMap[transcript]();
-      this.speak(`✓ ${transcript}`);
-      return;
-    }
-    for (const [command, action] of Object.entries(this.commandMap)) {
-      if (transcript.includes(command)) {
-        action();
-        this.speak(`✓ ${command}`);
-        return;
-      }
-    }
-    this.showStatus(`❓ Unknown command`, true);
-  }
-
-  speak(text) {
-    if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.9;
-      speechSynthesis.speak(utterance);
-    }
-  }
-
-  showHelp() {
-    const commands = Object.keys(this.commandMap).slice(0, 10);
-    this.speak(`Try: ${commands.join(", ")}`);
-    this.showStatus(`📋 ${commands.join(", ")}`);
-  }
-
-  showPanel() {
-    let panel = document.getElementById("voiceCommandPanel");
-    if (!panel) {
-      panel = document.createElement("div");
-      panel.id = "voiceCommandPanel";
-      document.body.appendChild(panel);
-    }
-    panel.style.display = "block";
-  }
-
-  hidePanel() {
-    const panel = document.getElementById("voiceCommandPanel");
-    if (panel) panel.style.display = "none";
-  }
-
-  showTranscript(text, isInterim = false) {
-    const panel = document.getElementById("voiceCommandPanel");
-    if (!panel) return;
-    let transcriptEl = panel.querySelector(".voice-transcript");
-    if (!transcriptEl) {
-      transcriptEl = document.createElement("div");
-      transcriptEl.className = "voice-transcript";
-      panel.insertBefore(transcriptEl, panel.firstChild);
-    }
-    transcriptEl.textContent = text + (isInterim ? "..." : "");
-  }
-
-  showStatus(text, isError = false) {
-    const panel = document.getElementById("voiceCommandPanel");
-    if (!panel) this.showPanel();
-    let statusEl = document.querySelector(".voice-status");
-    if (!statusEl) {
-      statusEl = document.createElement("div");
-      statusEl.className = "voice-status";
-      panel.appendChild(statusEl);
-    }
-    statusEl.textContent = text;
-    statusEl.style.color = isError ? "#FF4757" : "#B8BAC2";
-  }
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => {
-    window.voiceCommandEngine = new VoiceCommandEngine();
-  });
-} else {
-  window.voiceCommandEngine = new VoiceCommandEngine();
-}
+        // Update date/time every minute
+        setInterval(updateDateTime, 60000);
     </script>
 </body>
 </html>
