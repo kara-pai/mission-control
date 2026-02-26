@@ -746,6 +746,51 @@
                     </div>
                 </div>
 
+                <!-- Organizational Hierarchy -->
+                <div class="card" style="margin-bottom: var(--spacing-lg);">
+                    <div class="section-header">
+                        <div class="section-divider"></div>
+                        Power AI Organization
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md);">
+                        <div style="background: var(--bg-tertiary); padding: var(--spacing-md); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: var(--spacing-xs);">👑</div>
+                            <div style="font-weight: 700; color: var(--accent-secondary);">Louis / Marcelo</div>
+                            <div style="color: var(--text-secondary); font-size: 0.85rem;">CEO & Founder</div>
+                        </div>
+                        <div style="background: var(--bg-tertiary); padding: var(--spacing-md); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: var(--spacing-xs);">🧠</div>
+                            <div style="font-weight: 700; color: var(--accent-primary);">Muddy</div>
+                            <div style="color: var(--text-secondary); font-size: 0.85rem;">COO / Main Brain</div>
+                        </div>
+                        <div style="background: var(--bg-tertiary); padding: var(--spacing-md); border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: var(--spacing-xs);">📌</div>
+                            <div style="font-weight: 700; color: var(--accent-secondary);">Kara</div>
+                            <div style="color: var(--text-secondary); font-size: 0.85rem;">Executive Assistant</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: var(--spacing-md); padding-top: var(--spacing-md); border-top: 1px solid var(--border-glass);">
+                        <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--accent-secondary);">C-Suite Chiefs (Report to Muddy)</div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-sm);">
+                            <div style="background: rgba(139, 92, 246, 0.1); padding: var(--spacing-sm); border-radius: 8px; border: 1px solid var(--border-accent);">
+                                <div style="font-weight: 600;">Elon</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">CTO</div>
+                                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 4px;">Tech + Backend</div>
+                            </div>
+                            <div style="background: rgba(139, 92, 246, 0.1); padding: var(--spacing-sm); border-radius: 8px; border: 1px solid var(--border-accent);">
+                                <div style="font-weight: 600;">Gary</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">CMO</div>
+                                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 4px;">Content + Creative</div>
+                            </div>
+                            <div style="background: rgba(139, 92, 246, 0.1); padding: var(--spacing-sm); border-radius: 8px; border: 1px solid var(--border-accent);">
+                                <div style="font-weight: 600;">Warren</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">CRO</div>
+                                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 4px;">Revenue + Growth</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Focus Stack -->
                 <div class="card" style="margin-bottom: var(--spacing-lg);">
                     <div class="section-header">
@@ -1031,9 +1076,32 @@
             }
         };
 
-        // ========== SAMPLE DATA ========== 
+        // ========== POWER AI REAL ORGANIZATION ========== 
+        const PowerAIOrg = {
+            leadership: {
+                ceo: 'Louis / Marcelo Oliveira',
+                coo: 'Muddy',
+                ea: 'Kara'
+            },
+            chiefs: {
+                cto: { name: 'Elon', role: 'CTO', status: 'Active' },
+                cmo: { name: 'Gary', role: 'CMO', status: 'Active' },
+                cro: { name: 'Warren', role: 'CRO', status: 'Active' }
+            }
+        };
+
         function sampleAgents() {
             return {
+                'Leadership': [
+                    { name: 'Louis / Marcelo', role: 'CEO & Founder', status: 'Active', models: ['Opus 4.6'], lastRun: 'Always' },
+                    { name: 'Muddy', role: 'COO / Main Brain', status: 'Active', models: ['Opus 4.6'], lastRun: 'Now' },
+                    { name: 'Kara', role: 'Executive Assistant', status: 'Active', models: ['Opus 4.6'], lastRun: '1 min ago' }
+                ],
+                'C-Suite': [
+                    { name: 'Elon', role: 'CTO (Technical Leader)', status: 'Active', models: ['Opus 4.6'], lastRun: '2 min ago' },
+                    { name: 'Gary', role: 'CMO (Content Leader)', status: 'Active', models: ['Opus 4.6'], lastRun: 'Now' },
+                    { name: 'Warren', role: 'CRO (Revenue Leader)', status: 'Active', models: ['Opus 4.6'], lastRun: '5 min ago' }
+                ],
                 'Backend & Security': [
                     { name: 'Anvil', role: 'Backend Engineer', status: 'Active', models: ['Codex 5.3', 'Opus 4.6'], lastRun: '2 min ago' },
                     { name: 'Cipher', role: 'Security Engineer', status: 'Active', models: ['Codex 5.3', 'Opus 4.6'], lastRun: '5 min ago' }
@@ -1043,30 +1111,31 @@
                     { name: 'Sentry', role: 'DevOps Engineer', status: 'Idle', models: ['Opus 4.6'], lastRun: '1h ago' }
                 ],
                 'Content': [
-                    { name: 'Rex', role: 'YouTube Writer', status: 'Active', models: ['Opus 4.6', 'Sonnet 4.5'], lastRun: 'now' },
-                    { name: 'Sage', role: 'Research Agent', status: 'Active', models: ['Opus 4.6'], lastRun: '3 min ago' },
-                    { name: 'Echo', role: 'Newsletter', status: 'Idle', models: ['Opus 4.6'], lastRun: '6h ago' },
-                    { name: 'Hype', role: 'Content Engine', status: 'Active', models: ['Sonnet 4.5'], lastRun: '15 min ago' }
+                    { name: 'Rex', role: 'YouTube Script Writer', status: 'Active', models: ['Opus 4.6', 'Sonnet 4.5'], lastRun: 'now' },
+                    { name: 'Sage', role: 'Research & Analysis', status: 'Active', models: ['Opus 4.6'], lastRun: '3 min ago' },
+                    { name: 'Echo', role: 'Newsletter Engine', status: 'Idle', models: ['Opus 4.6'], lastRun: '6h ago' },
+                    { name: 'Hype', role: 'Content Automation', status: 'Active', models: ['Sonnet 4.5'], lastRun: '15 min ago' },
+                    { name: 'Mika', role: 'Social Media & SEO', status: 'Active', models: ['Opus 4.6'], lastRun: '4 min ago' }
                 ],
                 'Creative': [
-                    { name: 'Frame', role: 'Graphics', status: 'Active', models: ['Opus 4.6', 'Nano Pro'], lastRun: '20 min ago' },
-                    { name: 'Motion', role: 'Video & Motion', status: 'Idle', models: ['Gemini Pro'], lastRun: '2h ago' }
+                    { name: 'Creative T&G', role: 'Thumbnails & Graphics', status: 'Active', models: ['Opus 4.6', 'Nano Pro'], lastRun: '20 min ago' },
+                    { name: 'Video & Motion', role: 'Motion Graphics', status: 'Idle', models: ['Gemini Pro'], lastRun: '2h ago' }
                 ],
                 'Products': [
-                    { name: 'Scout', role: 'Product Intel', status: 'Active', models: ['Opus 4.6', 'Sonnet 4.5'], lastRun: '4 min ago' },
-                    { name: 'Herald', role: 'Announcements', status: 'Active', models: ['Sonnet 4.5'], lastRun: '10 min ago' }
+                    { name: 'Scout', role: 'Market Intelligence', status: 'Active', models: ['Opus 4.6', 'Sonnet 4.5'], lastRun: '4 min ago' },
+                    { name: 'Herald', role: 'Product Launches', status: 'Active', models: ['Sonnet 4.5'], lastRun: '10 min ago' }
                 ],
                 'Growth': [
                     { name: 'Beacon', role: 'SEO & Growth', status: 'Active', models: ['Sonnet 4.5'], lastRun: '8 min ago' },
-                    { name: 'Pulse', role: 'Analytics', status: 'Scaffolded', models: ['Sonnet 4.5'], lastRun: 'scheduled' }
+                    { name: 'Pulse', role: 'Analytics Agent', status: 'Scaffolded', models: ['Sonnet 4.5'], lastRun: 'scheduled' }
                 ],
                 'Community': [
-                    { name: 'Clay', role: 'Discord Bot', status: 'Active', models: ['Gemini Flash'], lastRun: 'now' },
-                    { name: 'Link', role: 'Discord Mgr', status: 'Active', models: ['Gemini Flash'], lastRun: '2 min ago' },
-                    { name: 'Vibe', role: 'Community', status: 'Idle', models: ['Gemini Flash'], lastRun: '30 min ago' }
+                    { name: 'Clay', role: 'Community Manager / Discord', status: 'Active', models: ['Gemini Flash'], lastRun: 'now' },
+                    { name: 'Link', role: 'Discord Manager', status: 'Active', models: ['Gemini Flash'], lastRun: '2 min ago' },
+                    { name: 'Vibe', role: 'Community Engagement', status: 'Idle', models: ['Gemini Flash'], lastRun: '30 min ago' }
                 ],
                 'QA': [
-                    { name: 'Audit', role: 'QA & Quality', status: 'Active', models: ['Codex 5.3', 'Opus 4.6'], lastRun: '7 min ago' }
+                    { name: 'Audit', role: 'Quality Assurance', status: 'Active', models: ['Codex 5.3', 'Opus 4.6'], lastRun: '7 min ago' }
                 ]
             };
         }
