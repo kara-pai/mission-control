@@ -646,6 +646,62 @@
             border-color: var(--accent-primary);
         }
 
+        /* ========== VOICE INPUT ========== */
+        .notes-controls {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .voice-btn {
+            padding: 8px 16px;
+            background: rgba(81, 112, 255, 0.15);
+            border: 1px solid rgba(81, 112, 255, 0.3);
+            border-radius: 8px;
+            color: var(--accent-primary);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .voice-btn:hover {
+            background: rgba(81, 112, 255, 0.25);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .voice-btn:active {
+            transform: translateY(0);
+        }
+
+        .voice-btn.recording {
+            background: rgba(255, 71, 87, 0.2);
+            border-color: var(--status-danger);
+            color: var(--status-danger);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        #voiceStatus {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* ========== SCROLLBAR ========== */
         ::-webkit-scrollbar {
             width: 8px;
@@ -842,11 +898,22 @@
                         <div class="notes-info-item">📝 <span id="charCount">0</span> characters</div>
                         <div class="notes-info-item">Last saved: <span id="lastSaved">Never</span></div>
                     </div>
+                    <div class="notes-controls">
+                        <button class="voice-btn" id="voiceRecordBtn" title="🎙️ Record voice note">🎙️ Record</button>
+                        <button class="voice-btn" id="voiceTranscribeBtn" title="Upload audio file">📁 Upload Audio</button>
+                        <input type="file" id="audioFileInput" accept="audio/*" style="display:none;">
+                    </div>
                 </div>
-                <textarea class="notes-textarea" id="notesTextarea" placeholder="Write your thoughts, ideas, and notes here. Supports markdown-style formatting."></textarea>
+                <div id="voiceStatus" style="display:none; padding: 1rem; background: rgba(0, 217, 126, 0.1); border-radius: 8px; margin-bottom: 1rem; color: #00D97E;">
+                    <span id="voiceStatusText"></span>
+                </div>
+                <textarea class="notes-textarea" id="notesTextarea" placeholder="Write your thoughts, ideas, and notes here. Or use voice! 🎙️"></textarea>
             </div>
         </div>
     </main>
+
+    <!-- Voice Commands Engine -->
+    <script src="./scripts/voice-commands.js"></script>
 
     <script>
         // ========== CONFIGURATION ========== 
@@ -1104,6 +1171,162 @@
             document.getElementById('lastSaved').textContent = new Date().toLocaleTimeString();
         }
 
+        // ========== VOICE INPUT =========
+        let mediaRecorder = null;
+        let audioChunks = [];
+
+        function initVoiceControls() {
+            const recordBtn = document.getElementById('voiceRecordBtn');
+            const transcribeBtn = document.getElementById('voiceTranscribeBtn');
+            const audioFileInput = document.getElementById('audioFileInput');
+
+            recordBtn.addEventListener('click', toggleVoiceRecord);
+            transcribeBtn.addEventListener('click', () => audioFileInput.click());
+            audioFileInput.addEventListener('change', handleAudioFile);
+        }
+
+        async function toggleVoiceRecord() {
+            const recordBtn = document.getElementById('voiceRecordBtn');
+            
+            if (!mediaRecorder) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.addEventListener('dataavailable', (event) => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener('stop', async () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        await sendAudioForTranscription(audioBlob);
+                        mediaRecorder = null;
+                    });
+
+                    mediaRecorder.start();
+                    recordBtn.textContent = '⏹️ Stop';
+                    recordBtn.classList.add('recording');
+                    showVoiceStatus('Recording... 🎙️');
+                } catch (error) {
+                    showVoiceStatus(`❌ Mic error: ${error.message}`, 'error');
+                }
+            } else {
+                mediaRecorder.stop();
+                recordBtn.textContent = '🎙️ Record';
+                recordBtn.classList.remove('recording');
+                showVoiceStatus('Processing audio...');
+            }
+        }
+
+        async function handleAudioFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            showVoiceStatus(`Uploading ${file.name}...`);
+            await sendAudioForTranscription(file);
+            
+            // Reset input
+            document.getElementById('audioFileInput').value = '';
+        }
+
+        async function sendAudioForTranscription(audioBlob) {
+            try {
+                const formData = new FormData();
+                formData.append('audio', audioBlob);
+                formData.append('timestamp', new Date().toISOString());
+
+                showVoiceStatus('Sending to transcription service...');
+
+                // Send to your backend endpoint (you'll create this)
+                const response = await fetch('/api/transcribe', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    // Fallback: use Web Speech API for local transcription
+                    await useWebSpeechAPI(audioBlob);
+                    return;
+                }
+
+                const data = await response.json();
+                
+                if (data.text) {
+                    const notesTextarea = document.getElementById('notesTextarea');
+                    const timestamp = new Date().toLocaleString();
+                    notesTextarea.value += `\n\n[Voice Note - ${timestamp}]\n${data.text}`;
+                    StorageManager.set('notes', notesTextarea.value);
+                    updateNotesMeta();
+                    showVoiceStatus(`✅ Transcribed: ${data.text.substring(0, 50)}...`);
+                }
+            } catch (error) {
+                showVoiceStatus(`⚠️ ${error.message}`, 'error');
+            }
+        }
+
+        async function useWebSpeechAPI(audioBlob) {
+            // Fallback: use browser's Web Speech API for basic transcription
+            showVoiceStatus('Using local speech recognition...');
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                showVoiceStatus('❌ Speech recognition not supported', 'error');
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onstart = () => {
+                showVoiceStatus('Listening... 👂');
+            };
+
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                showVoiceStatus(`Heard: ${transcript}`);
+            };
+
+            recognition.onend = () => {
+                showVoiceStatus('✅ Voice input complete');
+            };
+
+            recognition.onerror = (event) => {
+                showVoiceStatus(`❌ Error: ${event.error}`, 'error');
+            };
+
+            // For file-based audio, we can't directly use Web Speech API
+            // So we show this message and suggest uploading to transcription service
+            showVoiceStatus('💡 Tip: Set OPENAI_API_KEY for full Whisper transcription', 'info');
+        }
+
+        function showVoiceStatus(message, type = 'info') {
+            const statusEl = document.getElementById('voiceStatus');
+            const statusText = document.getElementById('voiceStatusText');
+            statusText.textContent = message;
+            statusEl.style.display = 'block';
+            
+            if (type === 'error') {
+                statusEl.style.background = 'rgba(255, 71, 87, 0.1)';
+                statusEl.style.color = '#FF4757';
+            } else if (type === 'info') {
+                statusEl.style.background = 'rgba(81, 112, 255, 0.1)';
+                statusEl.style.color = '#5170FF';
+            } else {
+                statusEl.style.background = 'rgba(0, 217, 126, 0.1)';
+                statusEl.style.color = '#00D97E';
+            }
+            
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 4000);
+        }
+
         // ========== PRIORITY MANAGEMENT ========== 
         function addPriority() {
             const priority = prompt('New priority:');
@@ -1128,6 +1351,7 @@
             initKanban();
             initTimeline();
             initNotes();
+            initVoiceControls();
 
             // Restore active tab
             const activeTab = StorageManager.get('activeTab', 'dashboard');
