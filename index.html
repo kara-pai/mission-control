@@ -702,6 +702,220 @@
             }
         }
 
+        /* ========== CRM ========== */
+        .crm-container {
+            padding: var(--spacing-lg);
+        }
+
+        .crm-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .crm-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .crm-buttons {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .crm-btn {
+            padding: 8px 16px;
+            background: rgba(81, 112, 255, 0.15);
+            border: 1px solid rgba(81, 112, 255, 0.3);
+            border-radius: 8px;
+            color: var(--accent-primary);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all var(--transition-fast);
+        }
+
+        .crm-btn:hover {
+            background: rgba(81, 112, 255, 0.25);
+            border-color: var(--accent-primary);
+        }
+
+        .crm-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
+        }
+
+        .crm-tabs {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: var(--spacing-md);
+        }
+
+        .crm-subtab {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all var(--transition-fast);
+        }
+
+        .crm-subtab.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+        }
+
+        .crm-subtab:hover {
+            color: var(--text-primary);
+        }
+
+        .crm-view {
+            display: none;
+        }
+
+        .crm-view.active {
+            display: block;
+        }
+
+        .crm-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .crm-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            transition: all var(--transition-fast);
+        }
+
+        .crm-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--accent-primary);
+        }
+
+        .crm-card-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .crm-card-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .crm-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .crm-card-btn {
+            flex: 1;
+            padding: 6px;
+            background: rgba(81, 112, 255, 0.1);
+            border: 1px solid rgba(81, 112, 255, 0.2);
+            border-radius: 6px;
+            color: var(--accent-primary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all var(--transition-fast);
+        }
+
+        .crm-card-btn:hover {
+            background: rgba(81, 112, 255, 0.2);
+        }
+
+        .pipeline-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .pipeline-column {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            min-height: 400px;
+        }
+
+        .pipeline-header {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .pipeline-items {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .pipeline-item {
+            background: rgba(81, 112, 255, 0.1);
+            border: 1px solid rgba(81, 112, 255, 0.3);
+            border-radius: 8px;
+            padding: var(--spacing-sm);
+            cursor: move;
+        }
+
+        .pipeline-item-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .pipeline-item-amount {
+            color: var(--accent-primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 4px;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: var(--spacing-lg);
+            color: var(--text-tertiary);
+            font-style: italic;
+        }
+
         /* ========== SCROLLBAR ========== */
         ::-webkit-scrollbar {
             width: 8px;
@@ -776,6 +990,7 @@
             <button class="nav-tab" onclick="switchTab('projects')">📋 Projects</button>
             <button class="nav-tab" onclick="switchTab('timeline')">📅 Timeline</button>
             <button class="nav-tab" onclick="switchTab('notes')">📝 Notes</button>
+            <button class="nav-tab" onclick="switchTab('crm')">👥 CRM</button>
         </nav>
         <div class="header-right">
             <input type="text" class="search-bar" id="searchBar" placeholder="Cmd+K search..." autocomplete="off">
@@ -908,6 +1123,82 @@
                     <span id="voiceStatusText"></span>
                 </div>
                 <textarea class="notes-textarea" id="notesTextarea" placeholder="Write your thoughts, ideas, and notes here. Or use voice! 🎙️"></textarea>
+            </div>
+        </div>
+
+        <!-- CRM Tab -->
+        <div class="tab-content" id="crm">
+            <div class="crm-container">
+                <div class="crm-header">
+                    <div class="crm-title">👥 CRM Dashboard</div>
+                    <div class="crm-buttons">
+                        <button class="crm-btn" onclick="showAddContactModal()">➕ Add Contact</button>
+                        <button class="crm-btn" onclick="showAddDealModal()">💰 Add Deal</button>
+                    </div>
+                </div>
+
+                <!-- CRM Stats -->
+                <div class="crm-stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalContacts">0</div>
+                        <div class="stat-label">Total Contacts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalDeals">0</div>
+                        <div class="stat-label">Active Deals</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="pipelineValue">$0</div>
+                        <div class="stat-label">Pipeline Value</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="conversionRate">0%</div>
+                        <div class="stat-label">Conversion Rate</div>
+                    </div>
+                </div>
+
+                <!-- Tabs within CRM -->
+                <div class="crm-tabs">
+                    <button class="crm-subtab active" onclick="switchCRMView('contacts')">📇 Contacts</button>
+                    <button class="crm-subtab" onclick="switchCRMView('deals')">💼 Deals</button>
+                    <button class="crm-subtab" onclick="switchCRMView('pipeline')">📊 Pipeline</button>
+                </div>
+
+                <!-- Contacts View -->
+                <div id="crm-contacts-view" class="crm-view active">
+                    <div class="crm-list" id="contactsList">
+                        <div class="empty-state">No contacts yet. Add one to get started! 👥</div>
+                    </div>
+                </div>
+
+                <!-- Deals View -->
+                <div id="crm-deals-view" class="crm-view">
+                    <div class="crm-list" id="dealsList">
+                        <div class="empty-state">No deals yet. Create one to track your pipeline! 💼</div>
+                    </div>
+                </div>
+
+                <!-- Pipeline View -->
+                <div id="crm-pipeline-view" class="crm-view">
+                    <div class="pipeline-board" id="pipelineBoard">
+                        <div class="pipeline-column">
+                            <div class="pipeline-header">Prospect</div>
+                            <div class="pipeline-items" id="pipeline-prospect"></div>
+                        </div>
+                        <div class="pipeline-column">
+                            <div class="pipeline-header">Negotiation</div>
+                            <div class="pipeline-items" id="pipeline-negotiation"></div>
+                        </div>
+                        <div class="pipeline-column">
+                            <div class="pipeline-header">Won</div>
+                            <div class="pipeline-items" id="pipeline-won"></div>
+                        </div>
+                        <div class="pipeline-column">
+                            <div class="pipeline-header">Lost</div>
+                            <div class="pipeline-items" id="pipeline-lost"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -1352,6 +1643,7 @@
             initTimeline();
             initNotes();
             initVoiceControls();
+            initCRM();
 
             // Restore active tab
             const activeTab = StorageManager.get('activeTab', 'dashboard');
@@ -1359,6 +1651,210 @@
                 document.querySelector(`[onclick="switchTab('${activeTab}')"]`)?.click();
             }
         });
+
+        // ========== CRM MANAGEMENT =========
+        function initCRM() {
+            const contacts = StorageManager.get('crm_contacts', []);
+            const deals = StorageManager.get('crm_deals', []);
+            
+            renderContacts(contacts);
+            renderDeals(deals);
+            updateCRMStats(contacts, deals);
+        }
+
+        function renderContacts(contacts) {
+            const list = document.getElementById('contactsList');
+            if (!contacts || contacts.length === 0) {
+                list.innerHTML = '<div class="empty-state">No contacts yet. Add one to get started! 👥</div>';
+                return;
+            }
+
+            list.innerHTML = contacts.map(c => `
+                <div class="crm-card">
+                    <div class="crm-card-title">${c.name}</div>
+                    <div class="crm-card-meta">📧 ${c.email}</div>
+                    <div class="crm-card-meta">📱 ${c.phone || 'N/A'}</div>
+                    <div class="crm-card-meta">🏢 ${c.company || 'N/A'}</div>
+                    <div class="crm-card-meta"><span style="background: rgba(81, 112, 255, 0.2); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${c.status || 'Lead'}</span></div>
+                    <div class="crm-card-actions">
+                        <button class="crm-card-btn" onclick="editContact('${c.id}')">✏️ Edit</button>
+                        <button class="crm-card-btn" onclick="deleteContact('${c.id}')" style="color: #FF4757;">🗑️ Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDeals(deals) {
+            const list = document.getElementById('dealsList');
+            if (!deals || deals.length === 0) {
+                list.innerHTML = '<div class="empty-state">No deals yet. Create one to track your pipeline! 💼</div>';
+                return;
+            }
+
+            list.innerHTML = deals.map(d => `
+                <div class="crm-card">
+                    <div class="crm-card-title">${d.name}</div>
+                    <div class="crm-card-meta">💰 $${parseFloat(d.amount).toLocaleString()}</div>
+                    <div class="crm-card-meta">📅 ${d.closeDate || 'N/A'}</div>
+                    <div class="crm-card-meta"><span style="background: rgba(0, 217, 126, 0.2); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${d.stage || 'Prospect'}</span></div>
+                    <div class="crm-card-actions">
+                        <button class="crm-card-btn" onclick="editDeal('${d.id}')">✏️ Edit</button>
+                        <button class="crm-card-btn" onclick="deleteDeal('${d.id}')" style="color: #FF4757;">🗑️ Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPipeline(deals) {
+            const stages = ['Prospect', 'Negotiation', 'Won', 'Lost'];
+            stages.forEach(stage => {
+                const stageDeals = deals.filter(d => (d.stage || 'Prospect') === stage);
+                const container = document.getElementById(`pipeline-${stage.toLowerCase()}`);
+                
+                if (!stageDeals.length) {
+                    container.innerHTML = '<div style="text-align: center; color: var(--text-tertiary); padding: var(--spacing-md);">No deals</div>';
+                    return;
+                }
+
+                container.innerHTML = stageDeals.map(d => `
+                    <div class="pipeline-item">
+                        <div class="pipeline-item-name">${d.name}</div>
+                        <div class="pipeline-item-amount">$${parseFloat(d.amount).toLocaleString()}</div>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function updateCRMStats(contacts, deals) {
+            document.getElementById('totalContacts').textContent = contacts.length;
+            document.getElementById('totalDeals').textContent = deals.length;
+            
+            const pipelineValue = deals.reduce((sum, d) => sum + (parseFloat(d.amount) || 0), 0);
+            document.getElementById('pipelineValue').textContent = '$' + pipelineValue.toLocaleString();
+            
+            const wonDeals = deals.filter(d => d.stage === 'Won').length;
+            const conversionRate = deals.length ? Math.round((wonDeals / deals.length) * 100) : 0;
+            document.getElementById('conversionRate').textContent = conversionRate + '%';
+        }
+
+        function switchCRMView(view) {
+            document.querySelectorAll('.crm-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.crm-subtab').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`crm-${view}-view`).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (view === 'pipeline') {
+                const deals = StorageManager.get('crm_deals', []);
+                renderPipeline(deals);
+            }
+        }
+
+        function showAddContactModal() {
+            const name = prompt('Contact name:');
+            if (!name) return;
+            
+            const email = prompt('Email:');
+            const phone = prompt('Phone:');
+            const company = prompt('Company:');
+            
+            const contacts = StorageManager.get('crm_contacts', []);
+            const newContact = {
+                id: Date.now().toString(),
+                name,
+                email,
+                phone,
+                company,
+                status: 'Lead',
+                createdAt: new Date().toISOString()
+            };
+            
+            contacts.push(newContact);
+            StorageManager.set('crm_contacts', contacts);
+            renderContacts(contacts);
+            updateCRMStats(contacts, StorageManager.get('crm_deals', []));
+        }
+
+        function showAddDealModal() {
+            const name = prompt('Deal name:');
+            if (!name) return;
+            
+            const amount = parseFloat(prompt('Amount:') || 0);
+            const closeDate = prompt('Close date (YYYY-MM-DD):');
+            
+            const deals = StorageManager.get('crm_deals', []);
+            const newDeal = {
+                id: Date.now().toString(),
+                name,
+                amount,
+                closeDate,
+                stage: 'Prospect',
+                createdAt: new Date().toISOString()
+            };
+            
+            deals.push(newDeal);
+            StorageManager.set('crm_deals', deals);
+            renderDeals(deals);
+            renderPipeline(deals);
+            updateCRMStats(StorageManager.get('crm_contacts', []), deals);
+        }
+
+        function editContact(id) {
+            const contacts = StorageManager.get('crm_contacts', []);
+            const contact = contacts.find(c => c.id === id);
+            if (!contact) return;
+            
+            const newName = prompt('Edit name:', contact.name);
+            if (newName) {
+                contact.name = newName;
+                contact.email = prompt('Edit email:', contact.email);
+                contact.phone = prompt('Edit phone:', contact.phone);
+                contact.company = prompt('Edit company:', contact.company);
+                
+                StorageManager.set('crm_contacts', contacts);
+                renderContacts(contacts);
+            }
+        }
+
+        function editDeal(id) {
+            const deals = StorageManager.get('crm_deals', []);
+            const deal = deals.find(d => d.id === id);
+            if (!deal) return;
+            
+            const newName = prompt('Edit deal name:', deal.name);
+            if (newName) {
+                deal.name = newName;
+                deal.amount = parseFloat(prompt('Edit amount:', deal.amount));
+                deal.stage = prompt('Edit stage (Prospect/Negotiation/Won/Lost):', deal.stage);
+                deal.closeDate = prompt('Edit close date:', deal.closeDate);
+                
+                StorageManager.set('crm_deals', deals);
+                renderDeals(deals);
+                renderPipeline(deals);
+                updateCRMStats(StorageManager.get('crm_contacts', []), deals);
+            }
+        }
+
+        function deleteContact(id) {
+            if (!confirm('Delete this contact?')) return;
+            
+            let contacts = StorageManager.get('crm_contacts', []);
+            contacts = contacts.filter(c => c.id !== id);
+            StorageManager.set('crm_contacts', contacts);
+            renderContacts(contacts);
+            updateCRMStats(contacts, StorageManager.get('crm_deals', []));
+        }
+
+        function deleteDeal(id) {
+            if (!confirm('Delete this deal?')) return;
+            
+            let deals = StorageManager.get('crm_deals', []);
+            deals = deals.filter(d => d.id !== id);
+            StorageManager.set('crm_deals', deals);
+            renderDeals(deals);
+            renderPipeline(deals);
+            updateCRMStats(StorageManager.get('crm_contacts', []), deals);
+        }
     </script>
 
     <!-- Voice Commands Engine -->
@@ -1383,10 +1879,12 @@ class VoiceCommandEngine {
       "go to projects": () => switchTab("projects"),
       "go to timeline": () => switchTab("timeline"),
       "go to notes": () => switchTab("notes"),
+      "go to crm": () => switchTab("crm"),
       "show dashboard": () => switchTab("dashboard"),
       "show projects": () => switchTab("projects"),
       "show timeline": () => switchTab("timeline"),
       "show notes": () => switchTab("notes"),
+      "show crm": () => switchTab("crm"),
       "new note": () => {
         switchTab("notes");
         document.getElementById("notesTextarea").focus();
@@ -1398,6 +1896,26 @@ class VoiceCommandEngine {
         }
       },
       "add task": () => switchTab("projects"),
+      "add contact": () => {
+        switchTab("crm");
+        setTimeout(() => showAddContactModal(), 300);
+      },
+      "add deal": () => {
+        switchTab("crm");
+        setTimeout(() => showAddDealModal(), 300);
+      },
+      "show contacts": () => {
+        switchTab("crm");
+        switchCRMView("contacts");
+      },
+      "show deals": () => {
+        switchTab("crm");
+        switchCRMView("deals");
+      },
+      "show pipeline": () => {
+        switchTab("crm");
+        switchCRMView("pipeline");
+      },
       "search": () => {
         document.getElementById("searchBar").focus();
         this.stopListening();
