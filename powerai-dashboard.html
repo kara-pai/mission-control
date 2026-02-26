@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerAI Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========== CSS VARIABLES ========== */
+        :root {
+            /* Colors */
+            --bg-primary: #050508;
+            --bg-secondary: #0f0f14;
+            --bg-tertiary: #1a1a23;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            
+            /* Brand Colors */
+            --accent-primary: #8B5CF6;
+            --accent-secondary: #F5B301;
+            
+            /* Status Colors */
+            --status-active: #22C55E;
+            --status-idle: #F59E0B;
+            --status-warning: #FBBF24;
+            --status-error: #EF4444;
+            
+            /* Text Colors */
+            --text-primary: #FFFFFF;
+            --text-secondary: #B8BAC2;
+            --text-tertiary: #7A7D89;
+            
+            /* Borders */
+            --border-glass: rgba(255, 255, 255, 0.06);
+            --border-accent: rgba(139, 92, 246, 0.3);
+            
+            /* Spacing */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 2.5rem;
+            
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ========== RESET & BASE ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+
+        /* ========== LAYOUT ========== */
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Sticky Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(5, 5, 8, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-lg);
+            height: 64px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            flex: 0 0 auto;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-title {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .header-center {
+            display: flex;
+            gap: var(--spacing-md);
+            flex: 1;
+            justify-content: center;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .nav-tab {
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border-bottom: 2px solid transparent;
+            position: relative;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-tab.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-secondary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            flex: 0 0 auto;
+        }
+
+        .search-bar {
+            width: 250px;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 0.85rem;
+            color: var(--status-active);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--status-active);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-icon:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-primary);
+            border-color: var(--border-accent);
+        }
+
+        /* Left Rail */
+        .left-rail {
+            position: fixed;
+            left: 0;
+            top: 64px;
+            width: 64px;
+            height: calc(100vh - 64px);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-glass);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            gap: var(--spacing-md);
+            z-index: 99;
+        }
+
+        .rail-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .rail-icon:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-primary);
+            border-color: var(--border-accent);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            margin-left: 64px;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+            background: 
+                linear-gradient(135deg, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255, 255, 255, 0.01) 0px,
+                    rgba(255, 255, 255, 0.01) 1px,
+                    transparent 1px,
+                    transparent 2px
+                );
+        }
+
+        .content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 4px;
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== CARDS ========== */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            transition: all var(--transition-base);
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-accent);
+            transform: translateY(-4px);
+        }
+
+        /* ========== METRIC CARDS ========== */
+        .metric-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ========== GRID LAYOUT ========== */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        /* ========== AGENT CARDS ========== */
+        .agent-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            transition: all var(--transition-base);
+        }
+
+        .agent-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .agent-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--status-active);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-idle {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--status-idle);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--status-warning);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .agent-role {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .agent-models {
+            display: flex;
+            gap: var(--spacing-xs);
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .model-tag {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-primary);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            border: 1px solid var(--border-accent);
+        }
+
+        .agent-meta {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-sm);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .agent-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--border-accent);
+            border-radius: 6px;
+            color: var(--accent-primary);
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-small:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* ========== FORMS ========== */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-primary);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: var(--spacing-sm);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        /* ========== SECTIONS ========== */
+        .section-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .section-divider {
+            width: 3px;
+            height: 24px;
+            background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 2px;
+        }
+
+        /* ========== ACTIVITY FEED ========== */
+        .activity-item {
+            padding: var(--spacing-md);
+            border-left: 3px solid var(--accent-secondary);
+            background: var(--bg-card);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .activity-text {
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* ========== SECTION COLUMNS ========== */
+        .department-columns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .department {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: var(--spacing-md);
+        }
+
+        .department-header {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .department-count {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--accent-primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .agent-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            .header-title {
+                display: block;
+            }
+
+            .search-bar {
+                width: 150px;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .department-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .left-rail {
+                width: 50px;
+                padding: var(--spacing-sm) 0;
+            }
+
+            .main-container {
+                margin-left: 50px;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            .metric-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            header {
+                flex-wrap: wrap;
+                gap: var(--spacing-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <div class="logo">⚡ PowerAI</div>
+            <div class="header-title" id="headerTitle">Command Center</div>
+        </div>
+
+        <div class="header-center">
+            <div class="header-nav">
+                <button class="nav-tab active" onclick="switchTab('overview')">📊 Overview</button>
+                <button class="nav-tab" onclick="switchTab('agents')">🧠 Agents</button>
+                <button class="nav-tab" onclick="switchTab('tasks')">🧾 Tasks</button>
+                <button class="nav-tab" onclick="switchTab('standup')">🗓️ Standup</button>
+                <button class="nav-tab" onclick="switchTab('workspaces')">🧩 Workspaces</button>
+                <button class="nav-tab" onclick="switchTab('docs')">📚 Docs</button>
+                <button class="nav-tab" onclick="switchTab('logs')">🌙 Logs</button>
+                <button class="nav-tab" onclick="switchTab('crm')">👥 CRM</button>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <input type="text" class="search-bar" id="searchBar" placeholder="Search... (Cmd+K)">
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>Live</span>
+            </div>
+            <button class="btn-icon" onclick="refreshDashboard()" title="Refresh">🔄</button>
+        </div>
+    </header>
+
+    <!-- Left Rail -->
+    <div class="left-rail">
+        <div class="rail-icon" onclick="switchTab('overview')" title="Overview">📊</div>
+        <div class="rail-icon" onclick="switchTab('agents')" title="Agents">🧠</div>
+        <div class="rail-icon" onclick="switchTab('tasks')" title="Tasks">🧾</div>
+        <div class="rail-icon" onclick="switchTab('standup')" title="Standup">📅</div>
+        <div class="rail-icon" onclick="switchTab('workspaces')" title="Workspaces">🧩</div>
+        <div class="rail-icon" onclick="switchTab('docs')" title="Docs">📚</div>
+        <div class="rail-icon" onclick="switchTab('logs')" title="Logs">📝</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="content">
+            <!-- Overview Tab -->
+            <div class="tab-content active" id="overview">
+                <div style="margin-bottom: var(--spacing-lg);">
+                    <h1 style="font-size: 1.8rem; margin-bottom: var(--spacing-sm);">
+                        Good <span id="timeGreeting">morning</span>, <span id="userName">Kara</span>
+                    </h1>
+                    <p style="color: var(--text-tertiary); font-size: 0.9rem;">
+                        <span id="dateDisplay"></span>
+                    </p>
+                </div>
+
+                <!-- Metrics -->
+                <div class="metric-strip">
+                    <div class="metric-card">
+                        <div class="metric-value" id="metricActiveAgents">0</div>
+                        <div class="metric-label">Active Agents</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metricIdleAgents">0</div>
+                        <div class="metric-label">Idle Agents</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metricTasksToday">0</div>
+                        <div class="metric-label">Tasks Today</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metricTokens">0</div>
+                        <div class="metric-label">Tokens Used</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metricCost">$0.00</div>
+                        <div class="metric-label">Total Cost</div>
+                    </div>
+                </div>
+
+                <!-- Focus Stack -->
+                <div class="card" style="margin-bottom: var(--spacing-lg);">
+                    <div class="section-header">
+                        <div class="section-divider"></div>
+                        Now Playing / Focus Stack
+                    </div>
+                    <div id="focusStack" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                        <div style="color: var(--text-tertiary); font-size: 0.9rem;">+ Add priority</div>
+                    </div>
+                    <input type="text" class="form-input" id="focusInput" placeholder="Add today's priority..." style="margin-top: var(--spacing-md);">
+                    <button class="btn" onclick="addFocusItem()" style="margin-top: var(--spacing-sm); width: 100%;">Add</button>
+                </div>
+
+                <!-- Activity Feed -->
+                <div class="card">
+                    <div class="section-header">
+                        <div class="section-divider"></div>
+                        Activity Feed
+                    </div>
+                    <div id="activityFeed" style="display: flex; flex-direction: column; gap: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+                        <div style="color: var(--text-tertiary); font-size: 0.9rem; text-align: center; padding: var(--spacing-lg);">No activity yet</div>
+                    </div>
+                    <input type="text" class="form-input" id="activityInput" placeholder="Log an activity...">
+                    <button class="btn" onclick="addActivity()" style="margin-top: var(--spacing-sm); width: 100%;">Log</button>
+                </div>
+            </div>
+
+            <!-- Agents Tab -->
+            <div class="tab-content" id="agents">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    OpenClaw Fleet
+                </div>
+                <div class="department-columns" id="agentDepartments">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Tasks Tab -->
+            <div class="tab-content" id="tasks">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    Task Manager
+                </div>
+                <div class="metric-strip" id="taskMetrics">
+                    <div class="metric-card">
+                        <div class="metric-value">0</div>
+                        <div class="metric-label">Active</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">0</div>
+                        <div class="metric-label">Idle</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">0</div>
+                        <div class="metric-label">Total Sessions</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Add Task</h3>
+                    <div class="form-group">
+                        <label class="form-label">Task Name</label>
+                        <input type="text" class="form-input" id="taskName" placeholder="Task name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Assign To</label>
+                        <input type="text" class="form-input" id="taskAgent" placeholder="Agent name">
+                    </div>
+                    <button class="btn" onclick="addTask()" style="width: 100%;">Create Task</button>
+                </div>
+
+                <div class="card" style="margin-top: var(--spacing-lg);">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Active Sessions</h3>
+                    <div id="activeSessions" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                        <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No active sessions</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Standup Tab -->
+            <div class="tab-content" id="standup">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    Daily Standup
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Today's Standup</h3>
+                    <div class="form-group">
+                        <label class="form-label">What shipped yesterday?</label>
+                        <textarea class="form-textarea" id="standupShipped" placeholder="Completed items..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">What's the plan today?</label>
+                        <textarea class="form-textarea" id="standupPlan" placeholder="Today's plan..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Blockers / Asks?</label>
+                        <textarea class="form-textarea" id="standupBlockers" placeholder="Any blockers..."></textarea>
+                    </div>
+                    <button class="btn" onclick="saveStandup()" style="width: 100%;">Save Standup</button>
+                </div>
+
+                <div class="card" style="margin-top: var(--spacing-lg);">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Past Standups</h3>
+                    <div id="pastStandups" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                        <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No standups yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workspaces Tab -->
+            <div class="tab-content" id="workspaces">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    Workspaces
+                </div>
+
+                <div class="card" style="margin-bottom: var(--spacing-lg);">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Add Workspace</h3>
+                    <div class="form-group">
+                        <label class="form-label">Workspace Name</label>
+                        <input type="text" class="form-input" id="workspaceName" placeholder="Workspace name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Repository / Path</label>
+                        <input type="text" class="form-input" id="workspacePath" placeholder="/path/to/workspace">
+                    </div>
+                    <button class="btn" onclick="addWorkspace()" style="width: 100%;">Add Workspace</button>
+                </div>
+
+                <div id="workspacesList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--spacing-lg);">
+                    <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No workspaces yet</div>
+                </div>
+            </div>
+
+            <!-- Docs Tab -->
+            <div class="tab-content" id="docs">
+                <div style="display: grid; grid-template-columns: 300px 1fr; gap: var(--spacing-lg); height: 100%;">
+                    <!-- Doc List -->
+                    <div class="card" style="height: fit-content;">
+                        <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Docs</h3>
+                        <div id="docsList" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <div style="color: var(--text-tertiary); font-size: 0.9rem;">No docs yet</div>
+                        </div>
+                        <input type="text" class="form-input" id="docTitle" placeholder="Doc title" style="margin-top: var(--spacing-md); margin-bottom: var(--spacing-sm);">
+                        <button class="btn" onclick="createDoc()" style="width: 100%;">New Doc</button>
+                    </div>
+
+                    <!-- Doc Editor -->
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                            <h3 id="docEditorTitle" style="font-weight: 700;">Select a doc</h3>
+                            <span id="docSavedTime" style="font-size: 0.8rem; color: var(--text-tertiary);">Not saved</span>
+                        </div>
+                        <textarea class="form-textarea" id="docEditor" placeholder="Markdown content..." style="height: calc(100vh - 300px); font-family: monospace;"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Tab -->
+            <div class="tab-content" id="logs">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    Overnight / Ops Log
+                </div>
+
+                <div class="card" style="margin-bottom: var(--spacing-lg);">
+                    <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Add Log Entry</h3>
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-input" id="logTitle" placeholder="Log title">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Details</label>
+                        <textarea class="form-textarea" id="logDetails" placeholder="Log details..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tags</label>
+                        <input type="text" class="form-input" id="logTags" placeholder="Completed, In Progress, etc.">
+                    </div>
+                    <button class="btn" onclick="addLogEntry()" style="width: 100%;">Log Entry</button>
+                </div>
+
+                <div id="logsList" style="display: flex; flex-direction: column; gap: var(--spacing-lg);">
+                    <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No log entries yet</div>
+                </div>
+            </div>
+
+            <!-- CRM Tab (from previous) -->
+            <div class="tab-content" id="crm">
+                <div class="section-header">
+                    <div class="section-divider"></div>
+                    CRM Dashboard
+                </div>
+                <div class="metric-strip">
+                    <div class="metric-card">
+                        <div class="metric-value" id="crmTotalContacts">0</div>
+                        <div class="metric-label">Total Contacts</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="crmTotalDeals">0</div>
+                        <div class="metric-label">Active Deals</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="crmPipelineValue">$0</div>
+                        <div class="metric-label">Pipeline Value</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="crmConversionRate">0%</div>
+                        <div class="metric-label">Conversion Rate</div>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: var(--spacing-lg);">
+                    <div class="card">
+                        <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Add Contact</h3>
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-input" id="crmContactName" placeholder="Contact name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="crmContactEmail" placeholder="Email">
+                        </div>
+                        <button class="btn" onclick="addCRMContact()" style="width: 100%;">Add Contact</button>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Add Deal</h3>
+                        <div class="form-group">
+                            <label class="form-label">Deal Name</label>
+                            <input type="text" class="form-input" id="crmDealName" placeholder="Deal name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-input" id="crmDealAmount" placeholder="0.00">
+                        </div>
+                        <button class="btn" onclick="addCRMDeal()" style="width: 100%;">Add Deal</button>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: var(--spacing-lg);">
+                    <div class="card">
+                        <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Contacts</h3>
+                        <div id="crmContactsList" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No contacts yet</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: var(--spacing-md); font-weight: 700;">Deals</h3>
+                        <div id="crmDealsList" style="display: flex; flex-direction: column; gap: var(--spacing-sm);">
+                            <div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No deals yet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== STORAGE ========== 
+        const Storage = {
+            get: (key, def = null) => JSON.parse(localStorage.getItem(`powerai_${key}`)) || def,
+            set: (key, val) => localStorage.setItem(`powerai_${key}`, JSON.stringify(val))
+        };
+
+        // ========== STATE ========== 
+        let state = {
+            agents: Storage.get('agents', sampleAgents()),
+            tasks: Storage.get('tasks', []),
+            activities: Storage.get('activities', []),
+            focus: Storage.get('focus', []),
+            standups: Storage.get('standups', []),
+            workspaces: Storage.get('workspaces', []),
+            docs: Storage.get('docs', []),
+            logs: Storage.get('logs', []),
+            crm: {
+                contacts: Storage.get('crm_contacts', []),
+                deals: Storage.get('crm_deals', [])
+            }
+        };
+
+        // ========== SAMPLE DATA ========== 
+        function sampleAgents() {
+            return {
+                'Backend & Security': [
+                    { name: 'Anvil', role: 'Backend Engineer', status: 'Active', models: ['Codex 5.3', 'Opus 4.6'], lastRun: '2 min ago' },
+                    { name: 'Cipher', role: 'Security Engineer', status: 'Active', models: ['Codex 5.3', 'Opus 4.6'], lastRun: '5 min ago' }
+                ],
+                'Frontend & DevOps': [
+                    { name: 'Pixel', role: 'Frontend Engineer', status: 'Active', models: ['Opus 4.6'], lastRun: '1 min ago' },
+                    { name: 'Sentry', role: 'DevOps Engineer', status: 'Idle', models: ['Opus 4.6'], lastRun: '1h ago' }
+                ],
+                'Content': [
+                    { name: 'Rex', role: 'YouTube Writer', status: 'Active', models: ['Opus 4.6', 'Sonnet 4.5'], lastRun: 'now' },
+                    { name: 'Sage', role: 'Research Agent', status: 'Active', models: ['Opus 4.6'], lastRun: '3 min ago' },
+                    { name: 'Echo', role: 'Newsletter', status: 'Idle', models: ['Opus 4.6'], lastRun: '6h ago' },
+                    { name: 'Hype', role: 'Content Engine', status: 'Active', models: ['Sonnet 4.5'], lastRun: '15 min ago' }
+                ],
+                'Creative': [
+                    { name: 'Frame', role: 'Graphics', status: 'Active', models: ['Opus 4.6', 'Nano Pro'], lastRun: '20 min ago' },
+                    { name: 'Motion', role: 'Video & Motion', status: 'Idle', models: ['Gemini Pro'], lastRun: '2h ago' }
+                ],
+                'Products': [
+                    { name: 'Scout', role: 'Product Intel', status: 'Active', models: ['Opus 4.6', 'Sonnet 4.5'], lastRun: '4 min ago' },
+                    { name: 'Herald', role: 'Announcements', status: 'Active', models: ['Sonnet 4.5'], lastRun: '10 min ago' }
+                ],
+                'Growth': [
+                    { name: 'Beacon', role: 'SEO & Growth', status: 'Active', models: ['Sonnet 4.5'], lastRun: '8 min ago' },
+                    { name: 'Pulse', role: 'Analytics', status: 'Scaffolded', models: ['Sonnet 4.5'], lastRun: 'scheduled' }
+                ],
+                'Community': [
+                    { name: 'Clay', role: 'Discord Bot', status: 'Active', models: ['Gemini Flash'], lastRun: 'now' },
+                    { name: 'Link', role: 'Discord Mgr', status: 'Active', models: ['Gemini Flash'], lastRun: '2 min ago' },
+                    { name: 'Vibe', role: 'Community', status: 'Idle', models: ['Gemini Flash'], lastRun: '30 min ago' }
+                ],
+                'QA': [
+                    { name: 'Audit', role: 'QA & Quality', status: 'Active', models: ['Codex 5.3', 'Opus 4.6'], lastRun: '7 min ago' }
+                ]
+            };
+        }
+
+        // ========== TAB SWITCHING ========== 
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName)?.classList.add('active');
+            event?.target?.classList.add('active');
+
+            // Render content
+            if (tabName === 'agents') renderAgents();
+            if (tabName === 'overview') updateMetrics();
+            if (tabName === 'crm') updateCRMMetrics();
+            if (tabName === 'logs') renderLogs();
+            if (tabName === 'workspaces') renderWorkspaces();
+            if (tabName === 'docs') renderDocs();
+        }
+
+        // ========== AGENTS ========== 
+        function renderAgents() {
+            const html = Object.entries(state.agents).map(([dept, agents]) => `
+                <div class="department">
+                    <div class="department-header">
+                        ${dept}
+                        <span class="department-count">${agents.length}</span>
+                    </div>
+                    <div class="agent-list">
+                        ${agents.map(agent => `
+                            <div class="agent-card">
+                                <div class="agent-header">
+                                    <span class="agent-name">${agent.name}</span>
+                                    <span class="status-pill status-${agent.status.toLowerCase()}">${agent.status}</span>
+                                </div>
+                                <div class="agent-role">${agent.role}</div>
+                                <div class="agent-models">
+                                    ${agent.models.map(m => `<span class="model-tag">${m}</span>`).join('')}
+                                </div>
+                                <div class="agent-meta">Last run: ${agent.lastRun}</div>
+                                <div class="agent-actions">
+                                    <button class="btn-small" onclick="alert('Assign task')">Assign</button>
+                                    <button class="btn-small" onclick="toggleAgentStatus('${agent.name}')">Toggle</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('agentDepartments').innerHTML = html;
+        }
+
+        // ========== FOCUS STACK ========== 
+        function addFocusItem() {
+            const input = document.getElementById('focusInput');
+            if (!input.value.trim()) return;
+
+            state.focus.push({
+                id: Date.now(),
+                text: input.value,
+                done: false
+            });
+
+            Storage.set('focus', state.focus);
+            renderFocus();
+            input.value = '';
+        }
+
+        function renderFocus() {
+            const html = state.focus.map(item => `
+                <div style="display: flex; align-items: center; gap: var(--spacing-sm); padding: var(--spacing-sm); background: var(--bg-tertiary); border-radius: 8px;">
+                    <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleFocus(${item.id})">
+                    <span style="${item.done ? 'text-decoration: line-through; color: var(--text-tertiary);' : ''}">${item.text}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('focusStack').innerHTML = html || '<div style="color: var(--text-tertiary);">+ Add priority</div>';
+        }
+
+        function toggleFocus(id) {
+            const item = state.focus.find(f => f.id === id);
+            if (item) item.done = !item.done;
+            Storage.set('focus', state.focus);
+            renderFocus();
+        }
+
+        // ========== ACTIVITY ========== 
+        function addActivity() {
+            const input = document.getElementById('activityInput');
+            if (!input.value.trim()) return;
+
+            state.activities.unshift({
+                id: Date.now(),
+                text: input.value,
+                time: new Date().toLocaleTimeString()
+            });
+
+            Storage.set('activities', state.activities);
+            renderActivity();
+            input.value = '';
+        }
+
+        function renderActivity() {
+            const html = state.activities.slice(0, 10).map(item => `
+                <div class="activity-item">
+                    <div class="activity-time">${item.time}</div>
+                    <div class="activity-text">${item.text}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('activityFeed').innerHTML = html || '<div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No activity yet</div>';
+        }
+
+        // ========== TASKS ========== 
+        function addTask() {
+            const name = document.getElementById('taskName').value;
+            const agent = document.getElementById('taskAgent').value;
+            if (!name.trim()) return;
+
+            state.tasks.push({
+                id: Date.now(),
+                name,
+                agent,
+                status: 'Active',
+                createdAt: new Date()
+            });
+
+            Storage.set('tasks', state.tasks);
+            document.getElementById('taskName').value = '';
+            document.getElementById('taskAgent').value = '';
+        }
+
+        // ========== STANDUP ========== 
+        function saveStandup() {
+            const standup = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString(),
+                shipped: document.getElementById('standupShipped').value,
+                plan: document.getElementById('standupPlan').value,
+                blockers: document.getElementById('standupBlockers').value
+            };
+
+            state.standups.unshift(standup);
+            Storage.set('standups', state.standups);
+
+            document.getElementById('standupShipped').value = '';
+            document.getElementById('standupPlan').value = '';
+            document.getElementById('standupBlockers').value = '';
+
+            renderStandups();
+            alert('Standup saved!');
+        }
+
+        function renderStandups() {
+            const html = state.standups.map(s => `
+                <div class="card">
+                    <div style="font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--accent-secondary);">${s.date}</div>
+                    <div style="font-size: 0.9rem; margin-bottom: var(--spacing-sm);">
+                        <strong>Shipped:</strong> ${s.shipped || 'N/A'}
+                    </div>
+                    <div style="font-size: 0.9rem; margin-bottom: var(--spacing-sm);">
+                        <strong>Plan:</strong> ${s.plan || 'N/A'}
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        <strong>Blockers:</strong> ${s.blockers || 'None'}
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('pastStandups').innerHTML = html || '<div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No standups yet</div>';
+        }
+
+        // ========== WORKSPACES ========== 
+        function addWorkspace() {
+            const name = document.getElementById('workspaceName').value;
+            const path = document.getElementById('workspacePath').value;
+            if (!name.trim()) return;
+
+            state.workspaces.push({
+                id: Date.now(),
+                name,
+                path,
+                agents: [],
+                updated: new Date().toLocaleString()
+            });
+
+            Storage.set('workspaces', state.workspaces);
+            document.getElementById('workspaceName').value = '';
+            document.getElementById('workspacePath').value = '';
+            renderWorkspaces();
+        }
+
+        function renderWorkspaces() {
+            const html = state.workspaces.map(ws => `
+                <div class="card">
+                    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: var(--spacing-sm);">${ws.name}</div>
+                    <div style="color: var(--text-tertiary); font-size: 0.85rem; margin-bottom: var(--spacing-sm);">${ws.path}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Updated: ${ws.updated}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('workspacesList').innerHTML = html || '<div style="grid-column: 1/-1; color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No workspaces yet</div>';
+        }
+
+        // ========== DOCS ========== 
+        function createDoc() {
+            const title = document.getElementById('docTitle').value;
+            if (!title.trim()) return;
+
+            const doc = {
+                id: Date.now(),
+                title,
+                content: '',
+                createdAt: new Date().toLocaleString()
+            };
+
+            state.docs.push(doc);
+            Storage.set('docs', state.docs);
+            document.getElementById('docTitle').value = '';
+            renderDocs();
+        }
+
+        function renderDocs() {
+            const html = state.docs.map(doc => `
+                <div style="padding: var(--spacing-sm); background: var(--bg-tertiary); border-radius: 8px; cursor: pointer; transition: all var(--transition-fast);" onclick="editDoc(${doc.id})">
+                    ${doc.title}
+                </div>
+            `).join('');
+
+            document.getElementById('docsList').innerHTML = html || '<div style="color: var(--text-tertiary); font-size: 0.9rem;">No docs yet</div>';
+        }
+
+        function editDoc(id) {
+            const doc = state.docs.find(d => d.id === id);
+            if (!doc) return;
+
+            document.getElementById('docEditorTitle').textContent = doc.title;
+            document.getElementById('docEditor').value = doc.content;
+            document.getElementById('docEditor').onchange = () => {
+                doc.content = document.getElementById('docEditor').value;
+                Storage.set('docs', state.docs);
+                document.getElementById('docSavedTime').textContent = 'Saved ' + new Date().toLocaleTimeString();
+            };
+        }
+
+        // ========== LOGS ========== 
+        function addLogEntry() {
+            const title = document.getElementById('logTitle').value;
+            const details = document.getElementById('logDetails').value;
+            const tags = document.getElementById('logTags').value;
+            if (!title.trim()) return;
+
+            state.logs.unshift({
+                id: Date.now(),
+                title,
+                details,
+                tags: tags.split(',').map(t => t.trim()),
+                date: new Date().toLocaleString()
+            });
+
+            Storage.set('logs', state.logs);
+            document.getElementById('logTitle').value = '';
+            document.getElementById('logDetails').value = '';
+            document.getElementById('logTags').value = '';
+            renderLogs();
+        }
+
+        function renderLogs() {
+            const html = state.logs.map(log => `
+                <div class="card">
+                    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: var(--spacing-sm);">${log.title}</div>
+                    <div style="color: var(--text-secondary); margin-bottom: var(--spacing-sm);">${log.details}</div>
+                    <div style="display: flex; gap: var(--spacing-xs);">
+                        ${log.tags.map(tag => `<span class="status-pill status-active">${tag}</span>`).join('')}
+                    </div>
+                    <div style="color: var(--text-tertiary); font-size: 0.8rem; margin-top: var(--spacing-sm);">${log.date}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('logsList').innerHTML = html || '<div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No log entries yet</div>';
+        }
+
+        // ========== CRM ========== 
+        function addCRMContact() {
+            const name = document.getElementById('crmContactName').value;
+            const email = document.getElementById('crmContactEmail').value;
+            if (!name.trim()) return;
+
+            state.crm.contacts.push({
+                id: Date.now(),
+                name,
+                email,
+                status: 'Lead'
+            });
+
+            Storage.set('crm_contacts', state.crm.contacts);
+            document.getElementById('crmContactName').value = '';
+            document.getElementById('crmContactEmail').value = '';
+            updateCRMMetrics();
+        }
+
+        function addCRMDeal() {
+            const name = document.getElementById('crmDealName').value;
+            const amount = parseFloat(document.getElementById('crmDealAmount').value) || 0;
+            if (!name.trim()) return;
+
+            state.crm.deals.push({
+                id: Date.now(),
+                name,
+                amount,
+                stage: 'Prospect'
+            });
+
+            Storage.set('crm_deals', state.crm.deals);
+            document.getElementById('crmDealName').value = '';
+            document.getElementById('crmDealAmount').value = '';
+            updateCRMMetrics();
+        }
+
+        function updateCRMMetrics() {
+            document.getElementById('crmTotalContacts').textContent = state.crm.contacts.length;
+            document.getElementById('crmTotalDeals').textContent = state.crm.deals.length;
+            
+            const pipelineValue = state.crm.deals.reduce((sum, d) => sum + d.amount, 0);
+            document.getElementById('crmPipelineValue').textContent = '$' + pipelineValue.toLocaleString();
+
+            const wonDeals = state.crm.deals.filter(d => d.stage === 'Won').length;
+            const rate = state.crm.deals.length ? Math.round((wonDeals / state.crm.deals.length) * 100) : 0;
+            document.getElementById('crmConversionRate').textContent = rate + '%';
+
+            // Render contacts
+            const contactsHtml = state.crm.contacts.map(c => `
+                <div style="padding: var(--spacing-sm); background: var(--bg-tertiary); border-radius: 8px;">
+                    <strong>${c.name}</strong><br>
+                    <span style="color: var(--text-tertiary); font-size: 0.85rem;">${c.email}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('crmContactsList').innerHTML = contactsHtml || '<div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No contacts yet</div>';
+
+            // Render deals
+            const dealsHtml = state.crm.deals.map(d => `
+                <div style="padding: var(--spacing-sm); background: var(--bg-tertiary); border-radius: 8px;">
+                    <strong>${d.name}</strong><br>
+                    <span style="color: var(--accent-secondary); font-weight: 700;">$${d.amount.toLocaleString()}</span> • ${d.stage}
+                </div>
+            `).join('');
+
+            document.getElementById('crmDealsList').innerHTML = dealsHtml || '<div style="color: var(--text-tertiary); text-align: center; padding: var(--spacing-lg);">No deals yet</div>';
+        }
+
+        // ========== METRICS ========== 
+        function updateMetrics() {
+            const activeCount = Object.values(state.agents).flat().filter(a => a.status === 'Active').length;
+            const idleCount = Object.values(state.agents).flat().filter(a => a.status === 'Idle').length;
+            const tasksToday = state.tasks.filter(t => new Date(t.createdAt).toDateString() === new Date().toDateString()).length;
+
+            document.getElementById('metricActiveAgents').textContent = activeCount;
+            document.getElementById('metricIdleAgents').textContent = idleCount;
+            document.getElementById('metricTasksToday').textContent = tasksToday;
+            document.getElementById('metricTokens').textContent = Math.floor(Math.random() * 1000000).toLocaleString();
+            document.getElementById('metricCost').textContent = '$' + (Math.random() * 100).toFixed(2);
+
+            renderFocus();
+            renderActivity();
+        }
+
+        // ========== UTILITIES ========== 
+        function refreshDashboard() {
+            updateMetrics();
+            alert('Dashboard refreshed!');
+        }
+
+        function toggleAgentStatus(agentName) {
+            for (const agents of Object.values(state.agents)) {
+                const agent = agents.find(a => a.name === agentName);
+                if (agent) {
+                    agent.status = agent.status === 'Active' ? 'Idle' : 'Active';
+                    Storage.set('agents', state.agents);
+                    renderAgents();
+                }
+            }
+        }
+
+        // ========== DATE & TIME ========== 
+        function updateDateTime() {
+            const now = new Date();
+            const hour = now.getHours();
+            const greeting = hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
+
+            document.getElementById('timeGreeting').textContent = greeting;
+            document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // ========== SEARCH ========== 
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateTime();
+            updateMetrics();
+            renderFocus();
+            renderActivity();
+            updateCRMMetrics();
+            renderWorkspaces();
+            renderDocs();
+            renderLogs();
+
+            // Search shortcut
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    document.getElementById('searchBar').focus();
+                }
+            });
+
+            // Search function
+            document.getElementById('searchBar').addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                // Implement search across all tabs
+                console.log('Search:', query);
+            });
+        });
+
+        // Update date/time every minute
+        setInterval(updateDateTime, 60000);
+    </script>
+</body>
+</html>
