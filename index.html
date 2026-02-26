@@ -743,6 +743,19 @@
             border-color: var(--accent-primary);
         }
 
+        .notion-btn {
+            background: rgba(81, 112, 255, 0.15);
+            border-color: rgba(81, 112, 255, 0.3);
+            color: var(--accent-primary);
+            min-width: 140px;
+        }
+
+        .notion-btn.connected {
+            background: rgba(0, 217, 126, 0.15);
+            border-color: rgba(0, 217, 126, 0.3);
+            color: var(--status-success);
+        }
+
         .crm-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1134,6 +1147,18 @@
                     <div class="crm-buttons">
                         <button class="crm-btn" onclick="showAddContactModal()">➕ Add Contact</button>
                         <button class="crm-btn" onclick="showAddDealModal()">💰 Add Deal</button>
+                        <button class="crm-btn notion-btn" id="notionAuthBtn" onclick="toggleNotionAuth()" title="Sync with Notion">🔗 Connect Notion</button>
+                    </div>
+                </div>
+
+                <!-- Notion Sync Status -->
+                <div id="notionStatus" style="display:none; margin-bottom: 1rem; padding: 12px; background: rgba(81, 112, 255, 0.1); border: 1px solid rgba(81, 112, 255, 0.3); border-radius: 8px; color: var(--accent-primary);">
+                    <div style="font-weight: 600; margin-bottom: 8px;">🔗 Notion Connected</div>
+                    <div style="font-size: 0.9rem; margin-bottom: 8px;" id="notionWorkspaceId"></div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="crm-btn" onclick="syncCRMToNotion()" style="flex: 1;">📤 Push to Notion</button>
+                        <button class="crm-btn" onclick="importCRMFromNotion()" style="flex: 1;">📥 Pull from Notion</button>
+                        <button class="crm-btn" onclick="toggleNotionAuth()" style="flex: 1; color: #FF4757;">🔓 Disconnect</button>
                     </div>
                 </div>
 
@@ -1855,7 +1880,129 @@
             renderPipeline(deals);
             updateCRMStats(StorageManager.get('crm_contacts', []), deals);
         }
+
+        // ========== NOTION INTEGRATION ==========
+        async function toggleNotionAuth() {
+            const isConnected = window.notionIntegration && window.notionIntegration.isAuthenticated();
+            
+            if (isConnected) {
+                // Disconnect
+                if (confirm('Disconnect from Notion?')) {
+                    await window.notionIntegration.logout();
+                    updateNotionStatus();
+                }
+            } else {
+                // Connect
+                console.log('🔐 Starting Notion authentication...');
+                const success = await window.notionIntegration.startAuth();
+                
+                if (success) {
+                    updateNotionStatus();
+                    showCRMNotification('✅ Connected to Notion!');
+                } else {
+                    showCRMNotification('⚠️ Notion authentication failed', 'error');
+                }
+            }
+        }
+
+        function updateNotionStatus() {
+            const statusEl = document.getElementById('notionStatus');
+            const authBtn = document.getElementById('notionAuthBtn');
+            const isConnected = window.notionIntegration && window.notionIntegration.isAuthenticated();
+            
+            if (isConnected) {
+                statusEl.style.display = 'block';
+                authBtn.textContent = '✅ Notion Connected';
+                authBtn.style.background = 'rgba(0, 217, 126, 0.15)';
+                authBtn.style.borderColor = 'rgba(0, 217, 126, 0.3)';
+                authBtn.style.color = 'var(--status-success)';
+                
+                const config = window.notionIntegration.config;
+                document.getElementById('notionWorkspaceId').textContent = 
+                    `Workspace: ${config.workspace_id || 'Unknown'}`;
+            } else {
+                statusEl.style.display = 'none';
+                authBtn.textContent = '🔗 Connect Notion';
+                authBtn.style.background = 'rgba(81, 112, 255, 0.15)';
+                authBtn.style.borderColor = 'rgba(81, 112, 255, 0.3)';
+                authBtn.style.color = 'var(--accent-primary)';
+            }
+        }
+
+        async function syncCRMToNotion() {
+            if (!window.notionIntegration.isAuthenticated()) {
+                showCRMNotification('❌ Not connected to Notion', 'error');
+                return;
+            }
+
+            showCRMNotification('📤 Syncing to Notion...');
+            
+            const contacts = StorageManager.get('crm_contacts', []);
+            const deals = StorageManager.get('crm_deals', []);
+            
+            const success = await window.notionIntegration.fullSync(contacts, deals);
+            
+            if (success) {
+                showCRMNotification('✅ Synced to Notion!');
+            } else {
+                showCRMNotification('⚠️ Sync failed', 'error');
+            }
+        }
+
+        async function importCRMFromNotion() {
+            if (!window.notionIntegration.isAuthenticated()) {
+                showCRMNotification('❌ Not connected to Notion', 'error');
+                return;
+            }
+
+            showCRMNotification('📥 Importing from Notion...');
+            
+            const contacts = await window.notionIntegration.importContactsFromNotion();
+            
+            if (contacts.length > 0) {
+                StorageManager.set('crm_contacts', contacts);
+                renderContacts(contacts);
+                updateCRMStats(contacts, StorageManager.get('crm_deals', []));
+                showCRMNotification(`✅ Imported ${contacts.length} contacts!`);
+            } else {
+                showCRMNotification('ℹ️ No contacts to import', 'info');
+            }
+        }
+
+        function showCRMNotification(message, type = 'success') {
+            // Reuse voice status element for notifications
+            const statusEl = document.getElementById('voiceStatus');
+            const statusText = document.getElementById('voiceStatusText');
+            
+            statusText.textContent = message;
+            statusEl.style.display = 'block';
+            
+            if (type === 'error') {
+                statusEl.style.background = 'rgba(255, 71, 87, 0.1)';
+                statusEl.style.color = '#FF4757';
+            } else if (type === 'info') {
+                statusEl.style.background = 'rgba(81, 112, 255, 0.1)';
+                statusEl.style.color = '#5170FF';
+            } else {
+                statusEl.style.background = 'rgba(0, 217, 126, 0.1)';
+                statusEl.style.color = '#00D97E';
+            }
+            
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 4000);
+        }
+
+        // Check Notion status on CRM tab load
+        function updateCRMOnTabSwitch() {
+            if (window.notionIntegration) {
+                updateNotionStatus();
+            }
+        }
     </script>
+
+    <!-- Notion Integration Script -->
+    <script src="./scripts/notion-dashboard-integration.js"></script>
 
     <!-- Voice Commands Engine -->
     <script>
