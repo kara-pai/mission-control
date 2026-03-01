@@ -13,7 +13,7 @@
 | **Reports To** | muddy |
 | **Direct Reports** | None |
 | **Gateway** | `central-shared` |
-| **Model** | Opus 4.6 + Sonnet 4.5 |
+| **Model** | Sonnet 4.6 + Opus 4.6 (complex research) |
 | **Inspiration** | The Indispensable Chief of Staff |
 
 ### Role Summary
