@@ -744,10 +744,10 @@
 
   .tag.active-tag { background: rgba(0,212,170,0.1); border: 1px solid rgba(0,212,170,0.2); color: var(--accent-teal); }
   .tag.scaffolded { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); color: var(--accent-amber); }
-  .tag.opus { background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); color: var(--accent-purple); }
-  .tag.sonnet { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); color: var(--accent-blue); }
-  .tag.flash { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); color: var(--accent-amber); }
-  .tag.codex { background: rgba(132,204,22,0.1); border: 1px solid rgba(132,204,22,0.2); color: var(--accent-lime); }
+  .tag.minimax { background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); color: var(--accent-purple); }
+  .tag.haiku { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); color: var(--accent-blue); }
+  .tag.gemini { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); color: var(--accent-amber); }
+  .tag.gpt4o { background: rgba(132,204,22,0.1); border: 1px solid rgba(132,204,22,0.2); color: var(--accent-lime); }
 
   .agent-status-row { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
   .agent-current-job { font-size: 9px; color: var(--text-muted); font-family: 'Montserrat', monospace; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -893,6 +893,36 @@
   .anim-delay-1 { animation-delay: 0.05s !important; }
   .anim-delay-2 { animation-delay: 0.1s !important; }
   .anim-delay-3 { animation-delay: 0.15s !important; }
+
+/* Moving gradient background */
+@keyframes gradient-move {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+body {
+  background: linear-gradient(-45deg, #0a0a0f, #12121a, #1a1a25, #0f0f18) !important;
+  background-size: 400% 400% !important;
+  animation: gradient-move 15s ease infinite !important;
+}
+/* Hover effects */
+.card, .agent-card, .stat-card, .kpi-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform: translateY(0) !important;
+}
+.card:hover, .agent-card:hover, .stat-card:hover, .kpi-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
+}
+/* Glow effects */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.3); }
+  50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.6); }
+}
+.glow, .stat-value {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
 </style>
 </head>
 <body>
@@ -1038,7 +1068,7 @@
               <div class="crm-priority high"></div>
               <div class="crm-content">
                 <div class="crm-title">Meridian Health — Enterprise Pilot</div>
-                <div class="crm-meta">$45K · Closing Feb 28 · Elon + Scout</div>
+                <div class="crm-meta">$45K · Closing Mar 15 · Elon + Herald</div>
               </div>
               <div class="crm-status active">Active</div>
             </div>
@@ -1046,7 +1076,7 @@
               <div class="crm-priority high"></div>
               <div class="crm-content">
                 <div class="crm-title">Atlas Capital — AI Automation Suite</div>
-                <div class="crm-meta">$32K · Due diligence phase · Gary</div>
+                <div class="crm-meta">$32K · Due diligence phase · Gary + Herald</div>
               </div>
               <div class="crm-status review">Review</div>
             </div>
@@ -1062,7 +1092,7 @@
               <div class="crm-priority med"></div>
               <div class="crm-content">
                 <div class="crm-title">Forge Media — SEO + Growth Pack</div>
-                <div class="crm-meta">$9.6K · Contract review · Beacon</div>
+                <div class="crm-meta">$9.6K · Contract review · Warren</div>
               </div>
               <div class="crm-status review">Review</div>
             </div>
@@ -1070,7 +1100,7 @@
               <div class="crm-priority low"></div>
               <div class="crm-content">
                 <div class="crm-title">Zenith Retail — Discord Community</div>
-                <div class="crm-meta">$6K · Closed Won · Clay + Link</div>
+                <div class="crm-meta">$6K · Closed Won · Clay</div>
               </div>
               <div class="crm-status closed">Closed ✓</div>
             </div>
@@ -1096,20 +1126,20 @@
           </div>
           <div class="usage-bars">
             <div class="usage-bar-item">
-              <div class="usage-bar-header"><span class="usage-bar-name">Claude Opus 4.6</span><span class="usage-bar-value">5.2M tok</span></div>
-              <div class="usage-bar-track"><div class="usage-bar-fill teal" style="width:84%"></div></div>
+              <div class="usage-bar-header"><span class="usage-bar-name">minimax-m2.5</span><span class="usage-bar-value">— tok</span></div>
+              <div class="usage-bar-track"><div class="usage-bar-fill teal" style="width:50%"></div></div>
             </div>
             <div class="usage-bar-item">
-              <div class="usage-bar-header"><span class="usage-bar-name">Gemini 3 Flash</span><span class="usage-bar-value">1.1M tok</span></div>
-              <div class="usage-bar-track"><div class="usage-bar-fill amber" style="width:18%"></div></div>
+              <div class="usage-bar-header"><span class="usage-bar-name">gemini-2.5-flash</span><span class="usage-bar-value">— tok</span></div>
+              <div class="usage-bar-track"><div class="usage-bar-fill amber" style="width:30%"></div></div>
             </div>
             <div class="usage-bar-item">
-              <div class="usage-bar-header"><span class="usage-bar-name">GPT-5.3 Codex</span><span class="usage-bar-value">22.7K tok</span></div>
-              <div class="usage-bar-track"><div class="usage-bar-fill blue" style="width:5%"></div></div>
+              <div class="usage-bar-header"><span class="usage-bar-name">gpt-4o</span><span class="usage-bar-value">— tok</span></div>
+              <div class="usage-bar-track"><div class="usage-bar-fill blue" style="width:20%"></div></div>
             </div>
             <div class="usage-bar-item">
-              <div class="usage-bar-header"><span class="usage-bar-name">Gemini 3 Pro</span><span class="usage-bar-value">6 img</span></div>
-              <div class="usage-bar-track"><div class="usage-bar-fill purple" style="width:2%"></div></div>
+              <div class="usage-bar-header"><span class="usage-bar-name">haiku-4.5</span><span class="usage-bar-value">— tok</span></div>
+              <div class="usage-bar-track"><div class="usage-bar-fill purple" style="width:15%"></div></div>
             </div>
           </div>
           <div class="model-pills">
@@ -1124,13 +1154,13 @@
 
           <div style="display:flex;flex-direction:column;gap:6px">
             <div style="background:var(--bg-card2);border:1px solid var(--border);border-left:3px solid var(--accent-amber);border-radius:8px;padding:10px 12px;">
-              <div style="font-size:11px;font-weight:700;margin-bottom:3px">Cron: Link YouTube Watcher</div>
-              <div style="font-size:9px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">gemini-3-flash · 78.3K tok · $0.00 · 3m ago</div>
+              <div style="font-size:11px;font-weight:700;margin-bottom:3px">Cron: YouTube Watcher</div>
+              <div style="font-size:9px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">gemini-2.5-flash · — tok · $0.00 · 3m ago</div>
               <div style="font-size:9px;color:var(--text-secondary);margin-top:4px;font-family:'JetBrains Mono',monospace">💾 HEARTBEAT_OK</div>
             </div>
             <div style="background:var(--bg-card2);border:1px solid var(--border);border-left:3px solid var(--accent-teal);border-radius:8px;padding:10px 12px;">
-              <div style="font-size:11px;font-weight:700;margin-bottom:3px">Delivery Mirror · Greeter</div>
-              <div style="font-size:9px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">claude-opus-4-6 · 3.9M tok · $56.01 · 26s ago</div>
+              <div style="font-size:11px;font-weight:700;margin-bottom:3px">Muddy — Main Brain</div>
+              <div style="font-size:9px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">minimax-m2.5 · — tok · $0.00 · 26s ago</div>
               <div style="font-size:9px;color:var(--text-secondary);margin-top:4px;font-family:'JetBrains Mono',monospace">💾 &lt;final&gt;HEARTBEAT_OK&lt;/final&gt;</div>
             </div>
           </div>
@@ -1242,7 +1272,7 @@
             <div class="c-role">CTO</div>
             <div class="c-name">Elon</div>
             <div class="c-desc">Technical execution, architecture, code quality, infrastructure</div>
-            <div class="model-tag">Opus 4.6</div>
+            <div class="model-tag">minimax-m2.5</div>
           </div>
         </div>
         <div class="chief-card cmo">
@@ -1251,7 +1281,7 @@
             <div class="c-role">CMO</div>
             <div class="c-name">Gary</div>
             <div class="c-desc">Content strategy, brand voice, multi-platform distribution</div>
-            <div class="model-tag">Opus 4.6</div>
+            <div class="model-tag">minimax-m2.5</div>
           </div>
         </div>
         <div class="chief-card cro">
@@ -1260,7 +1290,7 @@
             <div class="c-role">CRO</div>
             <div class="c-name">Warren</div>
             <div class="c-desc">Revenue ops, growth metrics, community health, product-market fit</div>
-            <div class="model-tag">Opus 4.6</div>
+            <div class="model-tag">minimax-m2.5</div>
           </div>
         </div>
       </div>
@@ -1278,12 +1308,12 @@
           <div class="agent-list">
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">⚙️</div><div><div class="agent-name">Elon</div><div class="agent-role-label">CTO</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag codex">Codex 5.3</div><div class="tag opus">Opus 4.6</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag codex">gpt-4o</div><div class="tag opus">minimax-m2.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Deploying pipeline...</div><div class="agent-kpi-val">99.8% uptime</div></div>
             </div>
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🔒</div><div><div class="agent-name">Cipher</div><div class="agent-role-label">Backend Dev</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag codex">Codex 5.3</div><div class="tag opus">Opus 4.6</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag codex">gpt-4o</div><div class="tag opus">minimax-m2.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Blocked: awaiting keys</div><div class="agent-kpi-val">2/5 audits</div></div>
             </div>
           </div>
@@ -1297,12 +1327,12 @@
           <div class="agent-list">
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🎨</div><div><div class="agent-name">Pixel</div><div class="agent-role-label">Frontend Engineer</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">Opus 4.6</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">minimax-m2.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Dashboard polish...</div><div class="agent-kpi-val">3 PRs open</div></div>
             </div>
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🛡️</div><div><div class="agent-name">Sentry</div><div class="agent-role-label">DevOps & Infra Engineer</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">Opus 4.6</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">minimax-m2.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Monitoring uptime...</div><div class="agent-kpi-val">99.9% SLA</div></div>
             </div>
           </div>
@@ -1316,7 +1346,7 @@
           <div class="agent-list">
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🔍</div><div><div class="agent-name">Audit</div><div class="agent-role-label">QA & Quality</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag codex">Codex 5.3</div><div class="tag opus">Opus 4.6</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag codex">gpt-4o</div><div class="tag opus">minimax-m2.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Running regression...</div><div class="agent-kpi-val">142 tests</div></div>
             </div>
           </div>
@@ -1334,22 +1364,22 @@
           <div class="agent-list">
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🎬</div><div><div class="agent-name">Rex</div><div class="agent-role-label">YouTube Writer</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">Opus 4.6</div><div class="tag sonnet">Sonnet 4.5</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">minimax-m2.5</div><div class="tag sonnet">haiku-4.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Drafting Q1 scripts...</div><div class="agent-kpi-val">45K avg views</div></div>
             </div>
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🔬</div><div><div class="agent-name">Sage</div><div class="agent-role-label">Research & Analysis</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">Opus 4.6</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">minimax-m2.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Market research...</div><div class="agent-kpi-val">8 reports/mo</div></div>
             </div>
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">📰</div><div><div class="agent-name">Echo</div><div class="agent-role-label">Newsletter Engine</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">Opus 4.6</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">minimax-m2.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Drafting issue #42...</div><div class="agent-kpi-val">3.2K subs</div></div>
             </div>
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🦁</div><div><div class="agent-name">Hype</div><div class="agent-role-label">Content Cascade Engine</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag sonnet">Sonnet 4.5</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag sonnet">haiku-4.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Repurposing content...</div><div class="agent-kpi-val">12 posts/wk</div></div>
             </div>
           </div>
@@ -1363,12 +1393,12 @@
           <div class="agent-list">
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🖼️</div><div><div class="agent-name">Frame</div><div class="agent-role-label">Thumbnails & Graphics</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">Opus 4.6</div><div class="tag" style="background:rgba(255,100,0,0.1);border-color:rgba(255,100,0,0.2);color:#ff6400">NanoBanana</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">minimax-m2.5</div><div class="tag" style="background:rgba(255,100,0,0.1);border-color:rgba(255,100,0,0.2);color:#ff6400">gpt-5-nano</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Thumbnail batch...</div><div class="agent-kpi-val">100% success</div></div>
             </div>
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🎥</div><div><div class="agent-name">Motion</div><div class="agent-role-label">Video & Motion Graphics</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.2);color:var(--accent-blue)">Gemini Pro</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.2);color:var(--accent-blue)">gemini-2.5-flash</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Rendering intro...</div><div class="agent-kpi-val">6 renders/day</div></div>
             </div>
           </div>
@@ -1386,12 +1416,12 @@
           <div class="agent-list">
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🎯</div><div><div class="agent-name">Scout</div><div class="agent-role-label">Product Intelligence</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">Opus 4.6</div><div class="tag sonnet">Sonnet 4.5</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag opus">minimax-m2.5</div><div class="tag sonnet">haiku-4.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Competitive research...</div><div class="agent-kpi-val">14 briefs</div></div>
             </div>
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">📣</div><div><div class="agent-name">Herald</div><div class="agent-role-label">Product Launches</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag sonnet">Sonnet 4.5</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag sonnet">haiku-4.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Launch prep V2...</div><div class="agent-kpi-val">2 launches/mo</div></div>
             </div>
           </div>
@@ -1405,12 +1435,12 @@
           <div class="agent-list">
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">✏️</div><div><div class="agent-name">Nova</div><div class="agent-role-label">Web Crawler</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag sonnet">Sonnet 4.5</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag sonnet">haiku-4.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Keyword audit...</div><div class="agent-kpi-val">127 keywords</div></div>
             </div>
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">📊</div><div><div class="agent-name">Pulse</div><div class="agent-role-label">Analytics Agent</div></div></div>
-              <div class="agent-tags"><div class="tag scaffolded">⊙ Scaffolded</div><div class="tag sonnet">Sonnet 4.5</div></div>
+              <div class="agent-tags"><div class="tag scaffolded">⊙ Scaffolded</div><div class="tag sonnet">haiku-4.5</div></div>
               <div class="agent-status-row"><div class="agent-current-job">In setup...</div><div class="agent-kpi-val">—</div></div>
             </div>
           </div>
@@ -1424,17 +1454,17 @@
           <div class="agent-list">
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🤖</div><div><div class="agent-name">Clay</div><div class="agent-role-label">Discord Bot</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag flash">Gemini Flash</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag flash">gemini-2.5-flash</div></div>
               <div class="agent-status-row"><div class="agent-current-job">Monitoring Discord...</div><div class="agent-kpi-val">4.2K members</div></div>
             </div>
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🔗</div><div><div class="agent-name">Link</div><div class="agent-role-label">Discord Manager</div></div></div>
-              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag flash">Gemini Flash</div></div>
+              <div class="agent-tags"><div class="tag active-tag">✓ Active</div><div class="tag flash">gemini-2.5-flash</div></div>
               <div class="agent-status-row"><div class="agent-current-job">YT Watcher cron...</div><div class="agent-kpi-val">98% response</div></div>
             </div>
             <div class="agent-card">
               <div class="agent-header"><div class="agent-icon">🎉</div><div><div class="agent-name">Vibe</div><div class="agent-role-label">Community Engagement</div></div></div>
-              <div class="agent-tags"><div class="tag scaffolded">⊙ Scaffolded</div><div class="tag flash">Gemini Flash</div></div>
+              <div class="agent-tags"><div class="tag scaffolded">⊙ Scaffolded</div><div class="tag flash">gemini-2.5-flash</div></div>
               <div class="agent-status-row"><div class="agent-current-job">In setup...</div><div class="agent-kpi-val">—</div></div>
             </div>
           </div>
@@ -1785,5 +1815,18 @@
     });
   });
 </script>
+
+<script>
+function updateRealTime() {
+  const now = new Date();
+  const timeEl = document.getElementById('realtime-time');
+  const dateEl = document.getElementById('realtime-date');
+  if(timeEl) timeEl.textContent = now.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+  if(dateEl) dateEl.textContent = now.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'});
+}
+setInterval(updateRealTime, 1000);
+updateRealTime();
+</script>
+
 </body>
 </html>
