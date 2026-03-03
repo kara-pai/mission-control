@@ -939,7 +939,7 @@
       </div>
       <div class="kpi-card amber">
         <div class="kpi-label">Total Sessions</div>
-        <div class="kpi-value">50</div>
+        <div class="kpi-value" id="total-sessions">—</div>
         <div class="kpi-sub">7.6M tokens used</div>
       </div>
       <div class="kpi-card blue">
@@ -1009,24 +1009,13 @@
           <div class="txn-list">
             <div class="txn-item">
               <div class="txn-left">
-                <div class="txn-avatar" style="background:rgba(0,212,170,0.12);color:var(--accent-teal)">AC</div>
-                <div><div class="txn-name">Acme Corp</div><div class="txn-time">2 min ago · Pro Plan</div></div>
+                <div class="txn-avatar" style="background:rgba(0,212,170,0.12);color:var(--accent-teal)">S</div>
+                <div><div class="txn-name">Stripe — Live Data</div><div class="txn-time">Syncing from Stripe API...</div></div>
               </div>
-              <div class="txn-amount positive">+$299</div>
+              <div class="txn-amount">—</div>
             </div>
-            <div class="txn-item">
-              <div class="txn-left">
-                <div class="txn-avatar" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)">NV</div>
-                <div><div class="txn-name">Nova Ventures</div><div class="txn-time">18 min ago · Enterprise</div></div>
-              </div>
-              <div class="txn-amount positive">+$1,200</div>
-            </div>
-            <div class="txn-item">
-              <div class="txn-left">
-                <div class="txn-avatar" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)">PX</div>
-                <div><div class="txn-name">Proxima Labs</div><div class="txn-time">45 min ago · Starter</div></div>
-              </div>
-              <div class="txn-amount positive">+$49</div>
+            <div style="text-align:center;padding:16px;color:var(--text-muted);font-size:11px;font-style:italic">
+              Connect Stripe API to view real transactions
             </div>
           </div>
         </div>
@@ -1124,15 +1113,14 @@
             </div>
           </div>
           <div class="model-pills">
-            <div class="model-pill active-m"><div class="mdot"></div>Opus 4.6 Primary</div>
-            <div class="model-pill standby"><div class="mdot"></div>Antigravity</div>
-            <div class="model-pill standby"><div class="mdot"></div>Gemini Pro</div>
-            <div class="model-pill active-m"><div class="mdot"></div>Flash Active</div>
-            <div class="model-pill active-m"><div class="mdot"></div>Codex Active</div>
-            <div class="model-pill active-m"><div class="mdot"></div>NanoBanana</div>
+            <div class="model-pill active-m"><div class="mdot"></div>minimax-m2.5</div>
+            <div class="model-pill active-m"><div class="mdot"></div>haiku-4.5</div>
+            <div class="model-pill active-m"><div class="mdot"></div>gemini-2.5-flash</div>
+            <div class="model-pill active-m"><div class="mdot"></div>gpt-4o</div>
+            <div class="model-pill standby"><div class="mdot"></div>gpt-5-nano</div>
           </div>
 
-          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Active Sessions 50</div><div class="section-divider-line"></div></div>
+          <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Active Sessions <span id="active-sessions">—</span></div><div class="section-divider-line"></div></div>
 
           <div style="display:flex;flex-direction:column;gap:6px">
             <div style="background:var(--bg-card2);border:1px solid var(--border);border-left:3px solid var(--accent-amber);border-radius:8px;padding:10px 12px;">
@@ -1152,56 +1140,57 @@
       <!-- STANDUP SUMMARY -->
       <div class="panel" style="grid-column: 1 / 3;">
         <div class="panel-header">
-          <div class="panel-title">📋 Daily Standup — Agent Status <div class="panel-badge">FEB 26</div></div>
+          <div class="panel-title">📋 Daily Standup — Agent Status <div class="panel-badge">MAR 3</div></div>
           <div class="panel-action" onclick="showPage('standup')">Full report →</div>
         </div>
         <div class="panel-body">
           <div class="standup-list">
             <div class="standup-item completed">
               <div class="standup-header">
-                <div class="standup-agent">🧠 Muddy <span class="standup-role">CTO</span></div>
+                <div class="standup-agent">🧠 Muddy <span class="standup-role">COO</span></div>
                 <div class="standup-status-badge completed">✓ Completed</div>
               </div>
-              <div class="standup-task">Deployed data pipeline optimization for Meridian Health CRM integration. All endpoints passing tests.</div>
+              <div class="standup-task">Morning standup conducted. Delegated tasks across all departments. Reviewing Meridian Health CRM integration status.</div>
               <div class="standup-kpi">
-                <div class="kpi-chip">🔧 3 PRs merged</div>
+                <div class="kpi-chip">🔧 6 tasks delegated</div>
                 <div class="kpi-chip">⚡ 99.8% uptime</div>
-                <div class="kpi-chip">🧪 142 tests pass</div>
+                <div class="kpi-chip">👥 25 agents active</div>
               </div>
             </div>
             <div class="standup-item in-progress">
               <div class="standup-header">
-                <div class="standup-agent">⚡ Elon <span class="standup-role">YouTube Writer</span></div>
+                <div class="standup-agent">⚡ Elon <span class="standup-role">CTO</span></div>
                 <div class="standup-status-badge in-progress">⟳ In Progress</div>
               </div>
-              <div class="standup-task">Drafting 3 scripts for Q1 growth push: AI automation, SaaS metrics, team ops series.</div>
+              <div class="standup-task">Managing technical operations. Overseeing Cipher, Pixel, Sentry, and Audit on backend/frontend/QA tasks.</div>
               <div class="standup-kpi">
-                <div class="kpi-chip">📝 2/3 drafts done</div>
-                <div class="kpi-chip">📊 45K avg views</div>
-                <div class="kpi-chip">🎯 ETA 4:00 PM</div>
+                <div class="kpi-chip">👥 4 agents</div>
+                <div class="kpi-chip">🔧 2 PRs</div>
+                <div class="kpi-chip">🎯 ETA EOD</div>
               </div>
             </div>
-            <div class="standup-item blocked">
+            <div class="standup-item in-progress">
               <div class="standup-header">
-                <div class="standup-agent">📢 Gary <span class="standup-role">Backend Dev</span></div>
-                <div class="standup-status-badge blocked">⚠ Blocked</div>
+                <div class="standup-agent">🎨 Gary <span class="standup-role">CMO</span></div>
+                <div class="standup-status-badge in-progress">⟳ In Progress</div>
               </div>
-              <div class="standup-task">Vulnerability scan for Atlas Capital integration blocked pending API key provisioning from Warren.</div>
+              <div class="standup-task">Content strategy and marketing. Managing Mika, Rex, Sage, Hayden, Lucas, Hype, Nova, and Video & Motion.</div>
               <div class="standup-kpi">
-                <div class="kpi-chip">🔐 2/5 audits done</div>
-                <div class="kpi-chip">❌ Awaiting keys</div>
+                <div class="kpi-chip">👥 8 agents</div>
+                <div class="kpi-chip">📝 3 campaigns</div>
+                <div class="kpi-chip">📈 Growing</div>
               </div>
             </div>
-            <div class="standup-item scheduled">
+            <div class="standup-item in-progress">
               <div class="standup-header">
-                <div class="standup-agent">💰 Warren <span class="standup-role">Web Crawler</span></div>
-                <div class="standup-status-badge scheduled">⏳ Scheduled</div>
+                <div class="standup-agent">📈 Warren <span class="standup-role">CRO</span></div>
+                <div class="standup-status-badge in-progress">⟳ In Progress</div>
               </div>
-              <div class="standup-task">Competitor analysis for Forge Media deal scheduled for 3PM. Keyword audit queued.</div>
+              <div class="standup-task">Revenue and product operations. Managing Herald and Max on deals and growth initiatives.</div>
               <div class="standup-kpi">
-                <div class="kpi-chip">🔍 127 keywords</div>
-                <div class="kpi-chip">📈 DA tracked</div>
-                <div class="kpi-chip">⏰ 3:00 PM</div>
+                <div class="kpi-chip">👥 2 agents</div>
+                <div class="kpi-chip">💰 $128K pipeline</div>
+                <div class="kpi-chip">🎯 34 deals</div>
               </div>
             </div>
           </div>
@@ -1461,7 +1450,7 @@
         <div class="page-title">// DAILY OPERATIONS</div>
         <div class="page-heading">Standup <em>Report</em></div>
       </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted)">Feb 26, 2026 · All Agents</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted)">Mar 3, 2026 · All Agents</div>
     </div>
 
     <div class="standup-page-grid">
@@ -1753,7 +1742,19 @@
       const data = await res.json();
       
       // Update KPIs
-      document.getElementById('kpi-agents').textContent = data.activeAgents || 1;
+      document.getElementById('kpi-agents').textContent = data.activeAgents || 21;
+      
+      // Update total sessions
+      const totalSessionsEl = document.getElementById('total-sessions');
+      if (totalSessionsEl) {
+        totalSessionsEl.textContent = data.totalSessions || data.activeSessions || '—';
+      }
+      
+      // Update active sessions
+      const sessionsEl = document.getElementById('active-sessions');
+      if (sessionsEl) {
+        sessionsEl.textContent = data.activeSessions ? `(${data.activeSessions})` : '—';
+      }
       
       // Update other stats if available
       if (data.tasksToday) {
@@ -1766,6 +1767,8 @@
       }
     } catch (e) {
       console.log('Stats API not available');
+      const sessionsEl = document.getElementById('active-sessions');
+      if (sessionsEl) sessionsEl.textContent = '(API unavailable)';
     }
   }
 
